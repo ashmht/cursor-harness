@@ -1,0 +1,15 @@
+.DS_Store
+.agent-progress.md
+.cursor/harness.yaml
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+*.log
+*.pem
+*.key
+.cursor/hooks/state/
+.cursor/hooks/cost-log.jsonl
+.cursor/hooks/last-session-cost.txt
+validation-report.local.*

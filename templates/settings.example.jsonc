@@ -1,0 +1,58 @@
+{
+  "editor.largeFileOptimizations": true,
+  "editor.stickyScroll.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.inlineSuggest.enabled": true,
+  "editor.fontSize": 16,
+  "editor.formatOnSave": false,
+  "editor.renderWhitespace": "trailing",
+
+  "files.watcherExclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.venv*/**": true,
+    "**/__pycache__/**": true
+  },
+  "search.exclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.venv*/**": true,
+    "**/__pycache__/**": true
+  },
+
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "python.defaultInterpreterPath": "/usr/bin/python3",
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "[dockercompose]": {
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.enablePersistentSessions": false,
+  "git.autofetch": false,
+  "git.confirmSync": false,
+  "git.fetchOnPull": true,
+  "git.statusLimit": 1000,
+  "git.repositoryScanMaxDepth": 1,
+  "cursor.composer.textSizeScale": 1.15,
+  "workbench.colorTheme": "Quiet Light",
+  "window.autoDetectColorScheme": false
+}

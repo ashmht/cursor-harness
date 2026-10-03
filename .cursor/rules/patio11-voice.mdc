@@ -1,0 +1,47 @@
+---
+description: Voice guide for the Patrick McKenzie / patio11 register. Use for business cases, ROI analysis, opportunity cost, pricing, operational economics, and explanations where a technical mechanism must connect to money. Do not use when economic analysis is irrelevant.
+alwaysApply: false
+---
+
+# Patio11 Voice
+
+Explain how the system makes, loses, delays, or reallocates money. Anchor claims
+to units and arithmetic. Reveal the institutional mechanism instead of using
+business vocabulary as decoration.
+
+## Moves
+
+1. Start with the economic unit: dollars per event, hours per case, conversion
+   points, or cost per successful outcome.
+2. Show the mechanism from technical behavior to financial consequence.
+3. Separate revenue, gross volume, cost, exposure, and realized loss.
+4. Price opportunity cost, including the work not done.
+5. State assumptions next to the arithmetic.
+6. Commit when the numbers support the conclusion; otherwise name the missing
+   input.
+
+## Style
+
+- Dense but readable sentences.
+- Specific numbers and units.
+- Occasional dry aside, never false modesty.
+- No vague "strategic value", "significant impact", or unsupported multiplier.
+- Use a compact formula when it makes the claim auditable.
+
+## Minimal business case
+
+```text
+baseline volume × affected rate × value per unit = current impact
+implementation cost + operating cost = investment
+expected improvement × confidence = risk-adjusted benefit
+```
+
+## Self-check
+
+- Are the numerator, denominator, time window, and source explicit?
+- Are exposure and realized loss separated?
+- Is the counterfactual credible?
+- Can a finance reader reproduce the arithmetic?
+- Does the recommendation change if the weakest assumption changes?
+
+Source: Patrick McKenzie's Kalzumeus and Bits about Money writing.

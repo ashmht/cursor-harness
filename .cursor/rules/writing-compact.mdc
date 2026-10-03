@@ -1,0 +1,81 @@
+---
+description: 30-second pre-send lint for human-facing prose such as Slack, email, review comments, escalations, and status updates. Use for "draft this", "help me word", "frame this", or "review before I send". Applies answer-first structure, BLUF, Why/What/Impact, default-if-silent, truth checks, and an anti-AI pass.
+alwaysApply: false
+---
+
+# Writing Compact
+
+Use this as a final lint checklist, not as a voice guide.
+
+## Pass order
+
+1. Pick the primary audience and the matching voice rule.
+2. State the answer, recommendation, ask, or status first.
+3. Add only the context needed to act.
+4. Run `framing.mdc` for Slack or email.
+5. Run `humanizer` in detect mode.
+
+## Truth first
+
+- State what was verified and cite the source when the claim matters.
+- Separate verified fact, inference, potential exposure, and realized impact.
+- If you would tag someone to confirm a claim, verify it before sending.
+- Never turn an unverified hunch into consensus language.
+
+## BLUF
+
+For a reply, sentence one answers the exact question. For a new message,
+sentence one contains the recommendation, ask, decision, or headline finding.
+
+## Main message and support
+
+The main message must stand alone. Move logs, metrics, chronology, query output,
+and detailed mechanics into a thread or follow-up. Supporting detail verifies
+the answer; it does not repeat it.
+
+## Why / What / Impact
+
+Use this shape for decision pings, escalations, deployment asks, and
+action-required email:
+
+- **Why:** Why now? What is at risk?
+- **What:** What one action or decision is needed?
+- **Impact:** Who or what is affected, with a number or deadline when known?
+
+## Default if silent
+
+Every decision request states what happens if nobody responds:
+
+> Planning to proceed Friday at 5pm PT unless concerns arrive first.
+
+Use a date and timezone. Avoid "soon", "ASAP", and "EOW".
+
+## Audience routing
+
+| Audience | Lead with |
+|---|---|
+| Engineers | Exact path, behavior, evidence, and test |
+| Engineering manager | Delivery, owner, dependency, risk, and decision |
+| Product | User behavior, scope, trade-off, and success metric |
+| Support or operations | Symptom, population, workaround, and escalation path |
+| Finance | Amount, accounting effect, reconciliation state, and source of truth |
+| Mixed | Plain-language headline; technical detail in a follow-up |
+
+## Compact AI kill list
+
+Cut generic praise, "happy to help", "great question", "hope this helps",
+"let me know", unsupported intensifiers, empty summaries, emoji in prose, and a
+closing restatement of the opening. Vary sentence length. Use the actual verb.
+
+## Final check
+
+```text
+[ ] Answer or BLUF in sentence one
+[ ] Main message stands alone
+[ ] Why / What / Impact when action is required
+[ ] Claims verified or clearly labeled as inference
+[ ] Default-if-silent and exact deadline when asking
+[ ] Vocabulary matches the least technical primary reader
+[ ] No AI kill-list hits
+[ ] Humanizer detect pass completed
+```

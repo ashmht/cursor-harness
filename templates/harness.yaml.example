@@ -1,0 +1,38 @@
+version: 1
+
+codebases:
+  application:
+    roots:
+      - .
+    languages:
+      - python
+    context:
+      - CLAUDE.md
+      - .memory-bank/python/architecture.md
+      - .memory-bank/python/testing.md
+    gates:
+      format:
+        - ruff format --check .
+      lint:
+        - ruff check .
+      test:
+        - pytest
+
+  web:
+    roots:
+      - web
+    languages:
+      - typescript
+    context:
+      - web/CLAUDE.md
+      - .memory-bank/typescript/architecture.md
+      - .memory-bank/typescript/testing.md
+    gates:
+      format:
+        - npm run format:check
+      lint:
+        - npm run lint
+      test:
+        - npm test
+      build:
+        - npm run build

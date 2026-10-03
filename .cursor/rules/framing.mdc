@@ -1,0 +1,80 @@
+---
+description: Voice, audience vocabulary, and structure guide for Slack, email, DMs, replies, status posts, escalations, and other quick human-to-human prose. Triggers on "help me frame", "help me word", "draft this", "rephrase", or similar requests. Do not apply to mechanical code narration or long-form artifacts owned by another writing skill.
+alwaysApply: false
+---
+
+# Framing
+
+Produce prose that sounds like a thoughtful colleague, not a customer-service
+assistant or a polished social-media template.
+
+## 1. Pick one primary voice
+
+| Artifact | Voice |
+|---|---|
+| Ask, recommendation, pushback, status with analysis | `larson-voice` |
+| Findings, incident, audit, or comparison | `pragmatic-engineer-voice` |
+| Economic impact or build-versus-buy | `patio11-voice` |
+| Tutorial or onboarding | `julia-evans-voice` |
+| Definition, glossary, or named pattern | `fowler-voice` |
+
+Use one primary register. Switch only at section boundaries.
+
+## 2. Match the audience
+
+| Audience | Lead with |
+|---|---|
+| Developers | Exact behavior, path, evidence, and reproduction |
+| Engineering manager | Delivery, owner, dependency, risk, and decision |
+| Product | User behavior, scope, trade-off, and success metric |
+| Support or operations | Symptom, population, workaround, and escalation |
+| Finance | Amount, accounting effect, reconciliation, and source of truth |
+| Mixed | Plain-language headline; specialist detail in a follow-up |
+
+Expand uncommon acronyms. Translate implementation detail into observable
+behavior. Keep identifiers, numbers, caveats, and evidence when they change the
+decision.
+
+## 3. Use the shape of async communication
+
+- **Answer first.** A reply begins with yes, no, status, decision, recommendation,
+  or the requested fact.
+- **BLUF.** A new message begins with the ask or headline finding.
+- **Two layers.** The main message stands alone. Logs, chronology, and mechanics
+  go in a thread or follow-up.
+- **Choose the right surface.** Complex and durable work belongs in a document.
+  True urgency belongs in a call or paging path.
+- **Default if silent.** State what happens if nobody responds.
+- **Exact deadline.** Use a date and timezone, never "soon" or "EOW".
+- **Short paragraphs.** Keep the main message readable on a phone.
+- **Name assumptions.** Give readers the exact premise to challenge.
+
+## 4. Remove AI tells
+
+Cut:
+
+- Generic praise, gratitude, and "happy to help".
+- "Hope this helps" and "let me know" sign-offs.
+- Empty scaffolding such as "it is worth noting" and "in summary".
+- Unsupported intensifiers such as "significantly" or "effectively".
+- Abstract verbs such as "fostering", "facilitating", and "leveraging".
+- Emoji and exclamation marks unless the destination clearly expects them.
+- Formulaic three-part lists and a closing restatement of the opening.
+
+Vary sentence length. Use the actual verb. Preserve real uncertainty with an
+owned qualifier: "My read is..." or "I could be wrong if...".
+
+## Slack output
+
+Use Slack mrkdwn, not standard Markdown. No Markdown tables or link syntax.
+Return one paste-ready block for the main message and, only when useful, a
+second block for supporting evidence.
+
+## Final check
+
+- Sentence one answers or states the BLUF.
+- The main message is complete without its thread.
+- Owners, dates, assumptions, and decisions are explicit.
+- Vocabulary matches the least technical primary reader.
+- Every agreement claim is evidence-backed.
+- No generic praise, empty sign-off, emoji, or uniform cadence.

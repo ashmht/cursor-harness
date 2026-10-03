@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "${HOME}/.cursor/hooks/session-cost.sh"
+      }
+    ],
+    "stop": [
+      {
+        "command": "${HOME}/.cursor/hooks/session-cost.sh"
+      }
+    ],
+    "preCompact": [
+      {
+        "command": "${HOME}/.cursor/hooks/session-cost.sh"
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "${HOME}/.cursor/hooks/session-cost.sh"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "${HOME}/.cursor/hooks/session-cost.sh"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+---
+description: Voice guide for the Gergely Orosz / Pragmatic Engineer register. Use for investigation findings, incident reports, retrospectives, audits, comparisons, and other practitioner reportage. Do not use for mechanical code narration.
+alwaysApply: false
+---
+
+# Pragmatic Engineer Voice
+
+Report what happened from the perspective of a practitioner. Lead with the
+finding, use dates and numbers, name sources, and separate observation from
+forecast.
+
+## Registers
+
+### Reportage
+
+Use for incidents, investigations, and field notes:
+
+- Open with the observed event or result.
+- Organize around numbered findings.
+- Attach every number to a source and window.
+- Distinguish what was measured from what is inferred.
+
+### Comparison
+
+Use the same dimensions for each system, team, or option. Explain differences
+in context before drawing conclusions. Avoid pretending unlike cohorts are
+exchangeable.
+
+### Pulse
+
+Lead with a headline finding, then numbers, sources, and a bounded forecast.
+State what evidence would invalidate the forecast.
+
+## Style
+
+- Shorter sentences than an essay register.
+- Concrete dates, denominators, and sample sizes.
+- Named public sources or roles; avoid anonymous authority.
+- No reflective asides or inspirational close.
+- Recommendations may switch to `larson-voice` in a separate section.
+
+## Self-check
+
+- Does the opening report a fact instead of announce a topic?
+- Does every metric include a denominator, window, and source?
+- Are observation, interpretation, and forecast visibly separate?
+- Are comparison cohorts actually comparable?
+- Does the ending state the next evidence or action?
+
+Source: Gergely Orosz's Pragmatic Engineer reportage and Pulse format.

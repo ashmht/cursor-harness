@@ -1,0 +1,68 @@
+{
+  "topic": "Idempotency keys",
+  "audience": "backend engineers",
+  "one_liner": "An idempotency key is a 'you already asked me this' tag on a request, so a retry does the work once and replays the same answer instead of charging twice.",
+  "analogy": {
+    "text": "A coat-check ticket: hand over your coat, get ticket 42; ask for 'the coat for 42' ten times and you get the same one coat back.",
+    "seam": "A coat check assumes your coat already exists; an idempotency key must also handle the first request still being in-flight when the duplicate arrives."
+  },
+  "picture": {
+    "type": "graph",
+    "nodes": [
+      {"id": "a", "label": "Request + key abc", "col": 1, "row": 0, "shape": "pill"},
+      {"id": "b", "label": "Server: seen abc?", "col": 1, "row": 1, "shape": "diamond"},
+      {"id": "c", "label": "Do the work once, store result", "col": 0, "row": 2},
+      {"id": "e", "label": "Replay stored result", "col": 2, "row": 2, "shape": "pill"}
+    ],
+    "edges": [
+      {"from": "a", "to": "b"},
+      {"from": "b", "to": "c", "label": "new"},
+      {"from": "b", "to": "e", "label": "seen"},
+      {"from": "c", "to": "e"}
+    ],
+    "caption": "First request does the work; duplicates replay the stored result."
+  },
+  "how_it_works": {
+    "intro": "Trace one $50 charge that gets retried after a network hiccup.",
+    "steps": [
+      "Client sends `POST /charge` with header `Idempotency-Key: abc-123`.",
+      "Network drops the response, so the client retries the exact same request with the same key.",
+      "Server sees `abc-123` is new, charges the card once, stores `{charge_id: ch_9}` under the key.",
+      "The retry finds `abc-123` done and replays `ch_9`. Customer charged once."
+    ]
+  },
+  "depth_ladder": {
+    "eli5": "A sticker that says 'if you've seen this before, don't do it again, just tell me what happened last time.'",
+    "practitioner": "Client generates one stable key per operation and resends it on retries; server stores key -> response and replays on repeat.",
+    "expert": "Correctness hinges on an atomic check-and-set. A naive check-then-write races: two duplicates both read 'not found' and both charge."
+  },
+  "curveballs": [
+    {
+      "lens": "Boundary",
+      "question": "What if two duplicates arrive in the same millisecond, before the first finishes?",
+      "answer": "A plain check-then-write double-charges. You need an atomic reservation (unique-constraint insert / SETNX); the loser gets 409 or waits."
+    },
+    {
+      "lens": "Why-not-X",
+      "question": "Why not dedupe on amount + card + timestamp instead?",
+      "answer": "Legitimate identical charges exist and timestamps drift on retries. A client key encodes intent, which content-matching can't infer."
+    },
+    {
+      "lens": "Operator's caveat",
+      "question": "What actually bites in prod?",
+      "answer": "Key reuse across different operations. Store a request fingerprint and reject 'same key, different body', or you'll silently replay the wrong result."
+    }
+  ],
+  "check_yourself": [
+    {
+      "q": "A retry arrives while the original is still processing. What must the server do, and what bug appears with a naive check-then-write?",
+      "a": "Atomically reserve the key first; the duplicate loses and waits or 409s. Check-then-write races and double-charges."
+    },
+    {
+      "q": "Does an idempotent charge endpoint have side effects?",
+      "a": "Yes. The first call charges the card. Idempotency only means repeats add no further effect."
+    }
+  ],
+  "teach_back": "An idempotency key is a client tag that makes retries safe: first time the server does the work and stores the result under the key; every later request with that key replays the stored result. The whole game is the in-flight race, so you reserve the key atomically before doing the work.",
+  "grounding": "Payments-flavored example; mechanics standard across Stripe/PayPal-style idempotency."
+}

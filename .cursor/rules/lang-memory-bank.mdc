@@ -1,0 +1,29 @@
+---
+globs: "*.kt, *.kts, jvm-*/**"
+alwaysApply: false
+---
+# Language Standards
+
+## Memory Bank Structure
+
+Read the standards defined in your codebase's memory bank before making changes:
+
+- `.memory-bank/<lang>/architecture.md` — Tech stack, project structure, dependency management
+- `.memory-bank/<lang>/testing.md` — Testing standards, tools, coverage requirements
+
+## Behavioral Guidelines
+
+### Always Do
+
+- **Read relevant context first**: Load only the language and package memory
+  needed for the files being changed
+- **Reference context**: Make decisions based on documented patterns and constraints
+- **Follow established patterns**: Use existing architectural decisions and coding conventions
+- **Validate against scope**: Check that solutions align with project objectives and boundaries
+
+### Never Do
+
+- Ignore a relevant memory-bank file for the package being changed
+- Ignore existing patterns or architectural decisions
+- Introduce technologies not documented in architecture.md without discussion
+- Make decisions that conflict with documented constraints or project scope

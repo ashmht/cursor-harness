@@ -1,0 +1,60 @@
+---
+alwaysApply: true
+---
+# Workflow
+
+## Session Start
+
+At the start of every new session, before doing any work:
+
+1. **Orient:** Run `pwd`, `git branch --show-current`, and `git status`.
+2. **Load progress:** Read `.agent-progress.md` if it exists — know what's in-flight and any blockers.
+3. **Load learnings:** Read `.memory-bank/session-learnings.md` when present.
+4. **Identify codebase:** Match the user's request to a codebase in
+   `.cursor/harness.yaml` when present; otherwise infer from file paths. Read the
+   codebase's `CLAUDE.md` when present, then relevant `.memory-bank/` files on
+   demand.
+5. **Be silent about it.** Don't produce a briefing. Mention prior context only if it directly affects the task.
+
+Skip steps 1-4 if the user's first message is a quick question needing no code changes.
+
+## Before Writing Code
+
+1. **Confirm scope:** Check whether a ticket, specification, or product
+   requirement already governs the change.
+2. **Create tracking only when required:** Do not create an issue merely for
+   ceremony. Follow the repository policy or the user's explicit request.
+3. **Protect existing work:** If the task is unrelated to the current branch,
+   create a new branch or worktree without discarding local changes.
+
+## During Work
+
+- **Use the narrowest reliable tool:** Prefer repository-native and
+  service-native tools with bounded output. Do not route around access or
+  approval controls.
+- **Small PRs:** Target < 400 lines diff, one logical change per PR. Split if scope grows.
+
+## When Stuck
+
+If 3+ consecutive attempts at the same step fail:
+
+1. Stop looping. Do not retry the same approach.
+2. Write current state to `.agent-progress.md` with a `Blocker:` entry.
+3. Summarize: what was tried, what failed, and what the likely root cause is.
+4. Ask the user for guidance before continuing.
+
+## Before Creating PR (mandatory sequence)
+
+1. **Build:** Look up build gate commands in `.cursor/harness.yaml` or the codebase's `CLAUDE.md`. Run all steps (compile, lint, test). Don't skip any.
+2. **Self-review:** Review the diff against the project's review checklist if one exists.
+3. **Create PR:** When requested or required by repository policy, create a
+   draft PR with a clear summary.
+4. **Update progress:** Update `.agent-progress.md` — mark work completed, note PR link.
+
+## Session End
+
+Before the session ends (or when the user says they're done):
+
+1. **Update `.agent-progress.md`**: What was completed, what's in progress, what's next, blockers.
+2. **Update session-learnings**: If a new pattern or gotcha emerged, add with `[YYYY-MM-DD]` prefix. If at capacity (20 entries), evict lowest-scoring by recency x blast-radius.
+3. **Suggest commit**: If meaningful uncommitted changes exist, suggest a checkpoint commit.

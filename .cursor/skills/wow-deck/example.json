@@ -1,0 +1,44 @@
+{
+  "title": "Example Deck",
+  "accent": "#38e1d6",
+  "footerLeft": "Synthetic example · 2026",
+  "slides": [
+    {
+      "type": "hook",
+      "kicker": "Synthetic example",
+      "quote": "\"It's fine, <span class=\"em\">Claude can read</span> it at 2am.\"",
+      "by": "famous last words, every team, 2026",
+      "turn": "Sure. Then it burns 180k tokens to answer one question. We can do better. Here's the plan.",
+      "notes": ["Open with the joke.", "Pivot to: this is me sharing the plan, not asking for a vote."]
+    },
+    {
+      "type": "bento",
+      "kicker": "The problem · quantified",
+      "heading": "Two god modules own everything",
+      "tiles": [
+        {"hero": true, "tone": "danger", "stat": "1,200", "label": "synthetic lines in <span class=\"mono\">handler.py</span>. Validation, persistence, and rendering all here."},
+        {"stat": "800", "size": "clamp(2rem,4.4vw,3.4rem)", "tone": "red", "label": "synthetic lines in <span class=\"mono\">queries.py</span>"},
+        {"stat": "24", "size": "clamp(2rem,4.4vw,3.4rem)", "tone": "red", "label": "synthetic importers, so a delete is not an option"},
+        {"wide": true, "tone": "danger", "label": "<b>The on-call tax:</b> you search one large module and hope. <b>The change tax:</b> a one-line fix can break unrelated paths."}
+      ],
+      "notes": "All numbers are synthetic. Lead with the hero tile."
+    },
+    {
+      "type": "options",
+      "kicker": "The options · including do-nothing",
+      "heading": "Three paths. We rejected two.",
+      "cards": [
+        {"tone": "bad", "title": "Do nothing", "bullets": ["Cost compounds every ticket", "Structural, not cosmetic"]},
+        {"tone": "bad", "title": "Full rewrite", "bullets": ["Many callers break at once", "No value until the end"]},
+        {"reco": true, "title": "Strangler", "bullets": ["Small incremental changes", "Riskiest piece wires last, behind a kill-switch"]}
+      ]
+    },
+    {
+      "type": "statement",
+      "kicker": "What's next",
+      "big": "Here's where we're <span class=\"em\">taking it</span>.",
+      "sub": "Not a vote. Poke holes in the thread.",
+      "notes": "Close by inviting pushback, not asking for approval."
+    }
+  ]
+}

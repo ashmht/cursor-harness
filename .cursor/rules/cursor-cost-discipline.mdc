@@ -1,0 +1,61 @@
+---
+description: >-
+  Cursor token-cost discipline — session length, handoff thresholds, read/MCP
+  scope, model tiering, ranked waste drivers. Apply for long agent sessions,
+  HTML dashboard iteration, CI loops in chat, or when the user asks about
+  context/cost/tokens/optimization.
+alwaysApply: false
+---
+
+# Cursor cost discipline
+
+Cost ≈ **(turns in chat) × (context size per turn)**. Driven by long sessions and fat tool results, not short everyday chats. Transcript analysis: 1.1% marathon chats ≈ 63% of re-ingestion; HTML iteration alone ≈ 43%. Prefer ending early over one more turn.
+
+## Ranked waste (hand off before fixing #1–#3 in the same chat)
+
+1. **Session length** — history re-billed every turn
+2. **HTML dashboard iteration** — never re-Read whole `.html`; browser + line range
+3. **Fat tool results** — unbounded Read/MCP/shell/CI output
+4. **Multi-phase one chat** — investigate → implement → review should be separate chats
+5. **Model switch mid-chat** — cache misses can re-bill the full history
+
+## Handoff thresholds
+
+| Context tray (user-visible) | Agent action |
+|----------------------------|--------------|
+| ≥60% | Stop full-file reads; write findings to disk |
+| ≥75% | Run `compact-chat` and produce a new-chat prompt |
+| ≥85% | Hand off before further implementation |
+
+Proxy signals when tray is unknown: ≥50 assistant turns, ≥80 tool calls, or same path re-read without `limit`.
+
+## Tool habits
+
+- **Read:** always `limit` + `offset` unless file is tiny (<80 lines).
+- **Search:** Grep / semantic search before Read.
+- **Shell/MCP:** narrow output; big results → file, then read tail only.
+- **HTML dashboards:** never re-ingest whole file; browser + line-range edits.
+- **Tests/CI:** script + log file, not agent-driven multi-hour loops.
+- **Exploration:** Task/subagent so bulk context is discarded.
+
+## Session habits
+
+- One ticket / one logical change per chat when possible.
+- Do **not** switch models mid-conversation; start a fresh chat with a handoff.
+- Use the least expensive available model that can complete the phase reliably.
+- Large features: Plan Mode → fresh implementer with plan only.
+- Investigations: persist findings → new chat to implement (do not fix in same thread).
+
+## Quick self-check
+
+Hand off if **any**: tray ≥60%; ≥40 assistant turns; HTML/CI loop in progress; same path re-read without `limit`.
+
+## Headroom / LLM proxies
+
+Do not recommend installing Headroom or another LLM proxy in a managed
+environment without security approval. Prefer bounded reads and `compact-chat`
+handoffs first.
+
+## Handoff skill
+
+When thresholds hit or user asks about cost/tokens/Headroom: follow skill `compact-chat` (ranked waste + ROI table in `cursor-cost-handoff`, emit copy-paste new-chat block, persist `.agent-handoff-<ticket>.md` or update `.agent-progress.md`).

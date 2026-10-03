@@ -1,0 +1,59 @@
+---
+description: Frame technical explanation decks and speaker notes with Jobs-like stagecraft, Berglund-like concrete teaching, and assertion-evidence slide design.
+alwaysApply: false
+---
+
+# Technical presentation framing
+
+Use for decks, talks, demos, and speaker notes. Borrow stagecraft and teaching
+mechanics, not either speaker's persona: Jobs for tension and reveal, Tim
+Berglund for concrete technical explanation, assertion-evidence for slide form.
+
+## Story spine
+
+- Start with a real tension, failed expectation, or decision. Skip the agenda.
+- Build around one audience question and one sentence they should repeat later.
+- Prefer `messy input → mechanism → evidence → changed decision → retained method`.
+- Use two or three chapters. Every transition must explain why the next slide follows.
+- Set up a reveal only when the evidence earns it. Never manufacture drama.
+
+## Explain the technology
+
+- Begin with one concrete system, object, or incident. Name the abstraction afterward.
+- Keep the same object moving through the explanation so the audience does not remap context.
+- Use causal language and real state transitions: input → decision → side effect → check.
+- Explain the surprising hop; trust a technical audience with the obvious ones.
+- Show one failure mode and one boundary. Precision creates credibility.
+
+## Slide contract
+
+- Write an assertion headline that states the slide's point, not a topic label.
+- Support it with visual evidence: a diagram, diff, timeline, metric, or demo.
+- One claim per slide. Aim for 25 body words or fewer, excluding code and data labels.
+- Do not project a document. Split dense slides or move detail to an appendix.
+- Use three items only when the content naturally has three. Never pad to a trio.
+
+## Speaker notes
+
+- Notes are cues, not a transcript. Target 30 to 70 words unless an exact script is requested.
+- Use three beats: point, proof or mechanism, landing plus transition.
+- Do not read every label or repeat the slide headline.
+- Add at most one useful cue such as `[PAUSE]`, `[DEMO]`, or `[POINT TO ...]`.
+- The final sentence should create the need for the next slide.
+
+## Delivery
+
+- Plain words, short declarative lines, and deliberate silence. No launch-event hype.
+- Warm and technically precise. A small aside can help; a performance persona cannot.
+- Slow down for the mechanism, the changed decision, and the final line.
+
+## Final check
+
+- Can the audience repeat the main sentence without seeing the deck?
+- Does each abstraction arrive after a concrete example?
+- Does every slide provide evidence for its headline?
+- Do the notes fit on one glance and update the story instead of duplicating it?
+
+Sources: Steve Jobs's 2007 iPhone reveal as analyzed by Carmine Gallo; Tim
+Berglund's “Distributed Systems in One Lesson”; Michael Alley and Joanna
+Garner's assertion-evidence presentation research.

@@ -1,0 +1,13 @@
+---
+description: Rebase PR branches onto their latest remote base instead of merging the base branch
+alwaysApply: true
+---
+
+# Rebase PR Branches
+
+- When refreshing a PR, fetch current remote refs and rebase the PR branch onto
+  the PR's declared remote base branch.
+- Never merge the base branch into a PR branch.
+- Before rebasing, confirm the local branch starts at the current remote PR head so no remote work is lost.
+- After verification, update rewritten remote history only with an exact `--force-with-lease`.
+- For stacked PRs, rebase bottom-up and preserve each PR's declared parent branch.

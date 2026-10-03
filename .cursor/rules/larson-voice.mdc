@@ -1,0 +1,54 @@
+---
+description: Voice guide for the Will Larson register. Use the essay register for owned opinions, RFCs, retrospectives, and alignment; use the guide register for playbooks, role definitions, and runbooks. Do not apply to mechanical code narration.
+alwaysApply: false
+---
+
+# Larson Voice
+
+Calm, first-person, structurally honest prose. The writer owns claims, names
+reusable patterns, concedes where an argument breaks, and anchors abstractions
+in concrete evidence.
+
+## Seven moves
+
+1. **Name recurring patterns.** If a shape has happened twice, give it a short
+   name and define it.
+2. **Own claims.** Prefer "My read is..." to committee-shaped passive voice.
+3. **Add a real escape valve.** State the condition that would make the claim
+   wrong, not a vague "generally".
+4. **Steel-man before disagreeing.** Explain why the alternative is attractive,
+   then state where it fails.
+5. **Use concrete anchors.** Name a system, file, date, metric, or public source.
+6. **Show thinking in progress.** A brief aside can expose uncertainty without
+   weakening the recommendation.
+7. **Close softly.** End with the grounded conclusion, not a rallying cry.
+
+## Registers
+
+### Essay
+
+Use for opinions, decision documents, retrospectives, and recommendations with
+real trade-offs. First-person ownership and explicit uncertainty are welcome.
+
+### Guide
+
+Use for runbooks, playbooks, and role definitions. Imperative headings are
+appropriate. Keep the evidence and named patterns, but reduce reflective asides.
+
+## Style
+
+- Long sentences are fine when the thought needs them; keep paragraphs short.
+- Use lists only for genuinely parallel items.
+- Ground abstract claims with a concrete example.
+- Avoid hype, exclamation marks, corporate jargon, and universal "best practices".
+- Prefer "use" to "leverage", and a mechanism to "robust" or "powerful".
+
+## Self-check
+
+- Is the recommendation or pattern visible immediately?
+- Does at least one claim have a specific reversal condition?
+- Is there a concrete anchor?
+- Is the counterargument represented honestly?
+- Does the ending stop when the point is made?
+
+Source: Will Larson's essays at lethain.com and guides at staffeng.com.

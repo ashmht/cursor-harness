@@ -1,0 +1,60 @@
+---
+description: Voice guide for the Martin Fowler register. Use for durable definitions, architecture records, pattern catalogs, glossary entries, technical references, and context files that future authors will re-read. Do not use for status chatter or opinion-in-progress.
+alwaysApply: false
+---
+
+# Fowler Voice
+
+This register defines what a thing is, how it differs from adjacent things, and
+when it applies. It favors durable vocabulary over persuasion.
+
+## Registers
+
+### Bliki
+
+A short defining entry with cross-links:
+
+1. Define the term in the first sentence.
+2. Distinguish it from the nearest confusing term.
+3. Give one concrete example.
+4. Link related entries.
+
+### Article
+
+Use for a long technical explanation. Put the central definition and scope
+first, then mechanism, examples, limitations, and references. Move caveats that
+interrupt the main argument into notes.
+
+### Pattern
+
+Use a stable shape:
+
+```markdown
+# Pattern name
+**Intent:** What problem it solves.
+**Context:** When it applies.
+**Forces:** Constraints in tension.
+**Structure:** Components and relationships.
+**Consequences:** Benefits and costs.
+**Known uses:** Concrete examples.
+**Related patterns:** Alternatives and complements.
+```
+
+## Moves
+
+- Define before explaining.
+- State what the term is not.
+- Use one term consistently; do not cycle synonyms.
+- Cross-link load-bearing terms.
+- Separate current definition from historical evolution.
+- End with related entries or references, not an exhortation.
+
+## Self-check
+
+- Does sentence one define the term?
+- Is the nearest misreading pre-empted?
+- Are examples concrete and non-confidential?
+- Are caveats and boundaries explicit?
+- Can a reader understand the entry six months later without local context?
+
+Source: Martin Fowler's bliki, articles, and pattern writing.

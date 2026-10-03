@@ -1,0 +1,49 @@
+---
+globs: "domain/**, core/**, **/domain/**, **/core/**, **/ledger/**"
+alwaysApply: false
+---
+# FCIS Domain Core
+
+Business logic that must be replayable and provably correct belongs in a pure
+functional core, isolated from effectful concerns.
+
+## Rules for code in a domain/core module
+
+### Always Do
+
+- **Zero I/O.** No DB calls, no HTTP calls, no file reads, no logging side
+  effects inside domain functions.
+- **Zero hidden inputs.** No reading the system clock, no randomness, no
+  global mutable state. Time and randomness are function *arguments*
+  (timestamps arrive on commands), not ambient calls — this is what makes
+  replay and determinism testable.
+- **Model effects as return values, not calls.** Functions take a
+  command/state and return events/decisions (`process(command) -> events`),
+  never perform the effect themselves.
+- **Push all I/O to the shell.** HTTP handlers, repositories, and workers
+  call the pure core and apply its output; they own the clock, the DB
+  transaction, and the queue.
+- **Property/fuzz-test the invariants, not just examples.** Prefer Hypothesis
+  (Python) / fast-check (TS) / seeded randomized command streams over
+  hand-picked test cases for anything with a conservation or ordering
+  invariant (balances, quantities, book state).
+- **Document non-obvious decisions next to the code that encodes them, and
+  pin each one with a test.** A load-bearing subtlety without a test is a
+  landmine for the next change.
+
+### Never Do
+
+- Never let a domain function depend on wall-clock time, `random`, or a
+  DB/network client — if you need "now," pass it in.
+- Never let a domain type leak framework concerns (no JPA annotations, no
+  Pydantic-from-request models) into the pure core; adapters translate at
+  the boundary.
+- Never skip a differential/replay test when writing an optimized version of
+  an existing pure core. Check it byte-for-byte against the reference
+  implementation over a large randomized stream.
+
+## Verifying you got it right
+
+Ask: if I replay the exact same input sequence through a fresh instance, do
+I get an identical output and end state, every time? If the answer isn't an
+unconditional yes, something effectful leaked into the core.
