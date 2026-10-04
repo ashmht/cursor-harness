@@ -14,6 +14,7 @@ a mirror of the entire Cursor home directory.
 - Sanitized examples for CLI preferences, editor settings, keybindings, hooks,
   and public MCP integrations.
 - A dry-run-first installer and layered repository validator.
+- `AGENTS.md`: the portable handoff checks that apply outside Cursor.
 
 ## Intentionally excluded
 
@@ -23,8 +24,8 @@ a mirror of the entire Cursor home directory.
   safety controls.
 - Raw account metadata, authentication identifiers, OAuth client IDs, tokens,
   private document IDs, remote hosts, and absolute home-directory paths.
-- Runtime state, transcripts, cost logs, hook state, generated reports, and
-  local memory.
+- Runtime state, transcripts, cost logs, hook state, generated reports,
+  knowledge-graph output such as `graphify-out/`, and local memory.
 - Cursor-maintained built-in skills and plugin caches. Those should be installed
   from their upstream source instead of vendored here.
 - Symlinked skills whose canonical source is another repository.

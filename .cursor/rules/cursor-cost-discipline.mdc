@@ -37,6 +37,7 @@ Proxy signals when tray is unknown: ≥50 assistant turns, ≥80 tool calls, or 
 - **HTML dashboards:** never re-ingest whole file; browser + line-range edits.
 - **Tests/CI:** script + log file, not agent-driven multi-hour loops.
 - **Exploration:** Task/subagent so bulk context is discarded.
+- **Code graphs:** do not add an always-on graph rule. A project-local AST graph is optional for structural questions in a large app, and the agent must keep working when it is missing. Do not commit generated graph output.
 
 ## Session habits
 
@@ -48,7 +49,7 @@ Proxy signals when tray is unknown: ≥50 assistant turns, ≥80 tool calls, or 
 
 ## Quick self-check
 
-Hand off if **any**: tray ≥60%; ≥40 assistant turns; HTML/CI loop in progress; same path re-read without `limit`.
+Hand off if **any**: tray ≥60%; ≥50 assistant turns; ≥80 tool calls; HTML/CI loop in progress; same path re-read without `limit`.
 
 ## Headroom / LLM proxies
 

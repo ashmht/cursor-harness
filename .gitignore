@@ -13,3 +13,5 @@ __pycache__/
 .cursor/hooks/cost-log.jsonl
 .cursor/hooks/last-session-cost.txt
 validation-report.local.*
+graphify-out/
+.pytest_cache/

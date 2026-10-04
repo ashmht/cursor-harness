@@ -101,6 +101,7 @@ not vote on the first review.
 ### Own change
 
 - Apply only concrete fixes supported by the review.
+- A request for review, critique, or improvement ideas is not authorization to edit. Apply fixes only when the user asks for the changes.
 - Run focused tests and the repository's required gates.
 - Re-review the resulting diff once.
 - Leave changes uncommitted unless the user requested a commit.

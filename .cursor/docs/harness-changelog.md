@@ -2,6 +2,13 @@
 
 Track changes to agent harness infrastructure.
 
+## 2026-10-04 — Portable checks and code-graph policy
+
+- Added `AGENTS.md` with the repository handoff checks.
+- Added a description-triggered code-graph rule. This harness does not vendor a knowledge graph.
+- Aligned the cost-discipline handoff thresholds with the proxy signals.
+- Ignored generated graph output.
+
 ## 2026-09-22 — Portable personal setup export
 
 - Added reusable writing, documentation, teaching, presentation, handoff,

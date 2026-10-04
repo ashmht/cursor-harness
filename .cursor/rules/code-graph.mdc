@@ -1,0 +1,18 @@
+---
+description: >-
+  When a code knowledge graph is worth using. Apply when the user asks about
+  Graphify, code graphs, call graphs, or indexing a repository for architecture
+  questions.
+alwaysApply: false
+---
+
+# Code graph
+
+Do not add a code graph to this harness. Cursor already indexes the repository, and this tree is rules, skills, and two scripts.
+
+Use a graph in an application repository only when cross-module questions are the actual failure: who calls this, what path connects A to B, what breaks if it changes.
+
+- Parse code locally with an AST extractor. Do not send the tree to a model just to build the map.
+- Trigger the rule by description. Do not set `alwaysApply: true`. An always-on graph instruction is billed on every chat, including chats with no graph.
+- If `graph.json` is missing or stale, search the source. A missing graph must not block the task.
+- Do not commit `graphify-out/` or other generated graph output. Commit a short architecture note only when a person would read it.
