@@ -2,6 +2,23 @@
 
 Track changes to agent harness infrastructure.
 
+## 2026-10-04 — Review fixes, Ruby language pack
+
+- Session-cost hook fails open, prices the turn count it prints, reads the
+  model from the session-end payload, and does not merge events that have no
+  stable session id. Tool counts are append-only.
+- Truth-seeking and rebase rules are description-triggered instead of
+  always-on. Fintech globs no longer match a generic `core/` directory.
+- Installer profiles are `core` (default), `writing`, and `fintech`.
+  `example-skill` is not installed. `--config` merges local Cursor and Claude
+  config without replacing existing keys.
+- Validator rejects unexpected email addresses, unparsable YAML, and shell
+  syntax errors, and scans git history for leaks that were deleted from the
+  work tree.
+- Language pack is Ruby. Kotlin memory-bank stubs are gone.
+- Documentation loops carry their own checklists and no longer require reading
+  every child skill up front.
+
 ## 2026-09-22 — Portable personal setup export
 
 - Added reusable writing, documentation, teaching, presentation, handoff,

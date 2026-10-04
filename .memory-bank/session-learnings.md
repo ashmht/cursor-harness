@@ -16,3 +16,6 @@ Max 20 entries. Eviction policy:
 ## Workflow Preferences
 
 - [2026-09-22] Installers should dry-run by default, preflight every conflict before the first write, reject symlinks, and create backups before forced replacement.
+- [2026-10-04] Session-cost hooks fail open, print the turn count they priced, and refuse a shared daily key when an event has no stable session id. Tool counts are append-only.
+- [2026-10-04] Install rules and skills by profile. `core` is the default. Writing and fintech are opt-in. `example-skill` is a template and is not installed.
+- [2026-10-04] The language pack is Ruby (`.memory-bank/ruby/`, RSpec or Minitest, RuboCop). The harness scripts themselves stay Python.

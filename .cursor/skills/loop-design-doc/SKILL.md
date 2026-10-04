@@ -17,21 +17,21 @@ description: >-
 ```
 Take [topic] and produce a decision-ready design document.
 
-PHASE 1 — INTERROGATE (read ~/.cursor/skills/socratic-doc-writer/SKILL.md)
+PHASE 1 — INTERROGATE
 Ask and answer before drafting:
 - Doc type: RFC | Tech Spec | ADR | Alignment
 - Who reads this? Name the person, not "stakeholders."
 - What do they decide after reading? One sentence.
 - What do they already know? Sets altitude.
 
-PHASE 2 — DRAFT (read ~/.cursor/skills/staff-eng-writing/SKILL.md)
+PHASE 2 — DRAFT
 - BLUF in the first paragraph: recommendation or ask before rationale.
 - Minto pyramid for trade-offs: answer → grouped reasons → evidence.
 - Minimum material for the decision; everything else → appendix.
 - Voice: `~/.cursor/rules/larson-voice.mdc` (essay) for RFC/alignment;
   `~/.cursor/rules/fowler-voice.mdc` (Article) for tech spec and (Pattern) for ADR.
 
-PHASE 3 — DEVIL'S ADVOCATE (read ~/.cursor/skills/loop-devils-advocate/SKILL.md)
+PHASE 3 — DEVIL'S ADVOCATE
 Initialize /tmp/redteam-{projectname}.md.
 Critic sub-agent: strongest evidence-backed case that the design is wrong.
 For each objection log: evidence, impact, status (open | resolved | accepted).
@@ -41,7 +41,11 @@ Repeat until no new high-impact objection and every logged item is resolved or a
 If same unresolved objections repeat two rounds without progress → report stalemate honestly.
 
 PHASE 4 — HUMANIZE
-Run humanizer on all prose. Read framing.mdc anti-AI guardrails.
+Apply this checklist. Open the humanizer skill only if a pattern is unclear:
+- Remove AI vocabulary, stacked hedges, and em dashes.
+- Vary sentence length.
+- Do not invent numbers, names, or anecdotes.
+- The selected voice rule wins over a generic tone.
 
 PHASE 5 — SHIP (if requested)
 - Google Doc → use a user-installed destination adapter; otherwise deliver
@@ -66,13 +70,16 @@ Finish with: BLUF, decision ask, objection log path, open risks, suggested revie
 - Cross-team alignment before build
 - Staff-review gates (hot path, FF ramp, data model changes)
 
-## Skills to read (in order)
+## Deeper references
 
-1. `~/.cursor/skills/socratic-doc-writer/SKILL.md`
-2. `~/.cursor/skills/staff-eng-writing/SKILL.md`
-3. `~/.cursor/rules/larson-voice.mdc` or `~/.cursor/rules/fowler-voice.mdc`
-4. `~/.cursor/skills/humanizer/SKILL.md`
-5. An optional destination adapter, if installed and explicitly requested
+The phase checklist above is enough to run the loop. Open one reference only
+when that checklist does not answer the question in front of you:
+
+- socratic-doc-writer, for the interrogation questions
+- staff-eng-writing, for BLUF and pyramid structure
+- larson-voice or fowler-voice, for the chosen register
+- humanizer, for a pattern the checklist does not name
+- a destination adapter, only when the user asked for that destination
 
 ## Memory
 

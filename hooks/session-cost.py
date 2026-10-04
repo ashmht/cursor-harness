@@ -8,6 +8,10 @@ Hooks do not expose billing fields. This script proxies cost from:
   - transcript size at session end (chars / 4)
 
 Output on sessionEnd: macOS notification + ~/.cursor/hooks/cost-log.jsonl
+
+The hook fails open. A bad payload still prints `{}` and exits 0.
+Tool-call counts are append-only. Events with no stable session id do not
+share state with anything else.
 """
 
 from __future__ import annotations
@@ -40,6 +44,16 @@ AVG_OUTPUT_TOKENS_PER_TURN = 900
 REINGESTION_FACTOR = 0.55  # avg context re-sent per turn vs peak
 
 
+SESSION_ID_FIELDS = (
+    "conversation_id",
+    "session_id",
+    "tab_id",
+    "composer_id",
+    "generation_id",
+    "bubble_id",
+)
+
+
 def load_input() -> dict[str, Any]:
     raw = sys.stdin.read()
     if not raw.strip():
@@ -47,17 +61,59 @@ def load_input() -> dict[str, Any]:
     return json.loads(raw)
 
 
-def session_key(data: dict[str, Any]) -> str:
-    for key in ("conversation_id", "session_id", "tab_id"):
+def as_int(value: Any, default: int = 0) -> int:
+    if isinstance(value, bool) or value is None:
+        return default
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    text = str(value).strip().rstrip("%")
+    try:
+        return int(float(text))
+    except (TypeError, ValueError):
+        return default
+
+
+def as_float(value: Any, default: float = 0.0) -> float:
+    if isinstance(value, bool) or value is None:
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).strip().rstrip("%")
+    try:
+        return float(text)
+    except (TypeError, ValueError):
+        return default
+
+
+def stable_session_key(data: dict[str, Any]) -> str | None:
+    """Return an id shared by every event in one Cursor session.
+
+    Events that carry none of these ids must not fall back to a calendar day.
+    A shared daily key merges unrelated sessions.
+    """
+    for key in SESSION_ID_FIELDS:
         value = str(data.get(key, "")).strip()
         if value:
             return re.sub(r"[^A-Za-z0-9._-]", "_", value)
-    return f"unknown-{datetime.now(timezone.utc).strftime('%Y%m%d')}"
+    transcript = str(
+        data.get("transcript_path") or os.environ.get("CURSOR_TRANSCRIPT_PATH") or ""
+    ).strip()
+    if transcript:
+        digest = re.sub(r"[^A-Za-z0-9._-]", "_", transcript)[-80:]
+        return f"transcript-{digest}"
+    return None
 
 
 def state_path(key: str) -> Path:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     return STATE_DIR / f"{key}.json"
+
+
+def tool_log_path(key: str) -> Path:
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    return STATE_DIR / f"{key}.tools"
 
 
 def load_state(key: str) -> dict[str, Any]:
@@ -85,10 +141,17 @@ def save_state(key: str, state: dict[str, Any]) -> None:
     state_path(key).write_text(json.dumps(state, indent=2))
 
 
+def count_tool_calls(key: str) -> int:
+    path = tool_log_path(key)
+    if not path.exists():
+        return 0
+    return sum(1 for line in path.read_text().splitlines() if line.strip())
+
+
 def delete_state(key: str) -> None:
-    path = state_path(key)
-    if path.exists():
-        path.unlink()
+    for path in (state_path(key), tool_log_path(key)):
+        if path.exists():
+            path.unlink()
 
 
 def _now_iso() -> str:
@@ -146,14 +209,16 @@ def estimate_cost(
     if transcript_tokens and transcript_tokens > context_basis:
         context_basis = transcript_tokens
 
-    if turns <= 0:
-        turns = 1
-
-    est_input = int(turns * max(context_basis, 2000) * REINGESTION_FACTOR)
-    est_output = int(turns * AVG_OUTPUT_TOKENS_PER_TURN)
-
     rate_in, rate_out = _model_rates(model)
-    cost = (est_input / 1_000_000) * rate_in + (est_output / 1_000_000) * rate_out
+    turns = max(int(turns), 0)
+    if turns == 0:
+        est_input = 0
+        est_output = 0
+        cost = 0.0
+    else:
+        est_input = int(turns * max(context_basis, 2000) * REINGESTION_FACTOR)
+        est_output = int(turns * AVG_OUTPUT_TOKENS_PER_TURN)
+        cost = (est_input / 1_000_000) * rate_in + (est_output / 1_000_000) * rate_out
 
     return {
         "est_input_tokens": est_input,
@@ -165,6 +230,7 @@ def estimate_cost(
         "model": model,
         "rate_input_per_m": rate_in,
         "rate_output_per_m": rate_out,
+        "priced_turns": turns,
     }
 
 
@@ -189,79 +255,114 @@ def notify(title: str, message: str) -> None:
         pass
 
 
+def _remember_model(state: dict[str, Any], data: dict[str, Any]) -> None:
+    model = data.get("model_id") or data.get("model")
+    if not model:
+        return
+    state["last_model"] = model
+    models = state.setdefault("models", [])
+    if model not in models:
+        models.append(model)
+
+
 def handle_session_start(data: dict[str, Any]) -> None:
-    key = session_key(data)
+    key = stable_session_key(data)
+    if key is None:
+        return
     state = load_state(key)
     state["started_at"] = _now_iso()
     state["composer_mode"] = data.get("composer_mode")
+    _remember_model(state, data)
     save_state(key, state)
-    print("{}")
 
 
 def handle_stop(data: dict[str, Any]) -> None:
     if data.get("status") != "completed":
-        print("{}")
+        return
+    key = stable_session_key(data)
+    if key is None:
         return
 
-    key = session_key(data)
     state = load_state(key)
-    state["turns"] = int(state.get("turns", 0)) + 1
-
-    model = data.get("model_id") or data.get("model")
-    if model:
-        state["last_model"] = model
-        models = state.setdefault("models", [])
-        if model not in models:
-            models.append(model)
-
+    state["turns"] = as_int(state.get("turns", 0)) + 1
+    _remember_model(state, data)
     save_state(key, state)
-    print("{}")
 
 
 def handle_pre_compact(data: dict[str, Any]) -> None:
-    key = session_key(data)
+    key = stable_session_key(data)
+    if key is None:
+        return
     state = load_state(key)
-    state["compactions"] = int(state.get("compactions", 0)) + 1
+    state["compactions"] = as_int(state.get("compactions", 0)) + 1
 
-    tokens = int(data.get("context_tokens") or 0)
-    pct = float(data.get("context_usage_percent") or 0)
-    window = int(data.get("context_window_size") or state.get("context_window_size") or 200000)
+    tokens = as_int(data.get("context_tokens"))
+    pct = as_float(data.get("context_usage_percent"))
+    window = as_int(
+        data.get("context_window_size") or state.get("context_window_size"),
+        200000,
+    )
 
-    if tokens > int(state.get("peak_context_tokens", 0)):
+    if tokens > as_int(state.get("peak_context_tokens", 0)):
         state["peak_context_tokens"] = tokens
-    if pct > float(state.get("peak_context_pct", 0)):
+    if pct > as_float(state.get("peak_context_pct", 0)):
         state["peak_context_pct"] = pct
     state["context_window_size"] = window
 
     save_state(key, state)
-    print("{}")
 
 
 def handle_post_tool_use(data: dict[str, Any]) -> None:
-    key = session_key(data)
-    state = load_state(key)
-    state["tool_calls"] = int(state.get("tool_calls", 0)) + 1
-    save_state(key, state)
-    print("{}")
+    """Append one line. Do not read or rewrite the session JSON."""
+    key = stable_session_key(data)
+    if key is None:
+        return
+    with tool_log_path(key).open("a", encoding="utf-8") as handle:
+        handle.write("1\n")
+
+
+def priced_turn_count(
+    observed_turns: int,
+    *,
+    transcript_tokens: int | None,
+    tool_calls: int,
+    duration_ms: int,
+) -> int:
+    """Price a turn only when this payload shows the session did work.
+
+    The summary prints this same number. A session with no completed stop,
+    no tools, no transcript, and no duration is priced as zero turns.
+    """
+    if observed_turns > 0:
+        return observed_turns
+    if transcript_tokens or tool_calls or duration_ms:
+        return 1
+    return 0
 
 
 def handle_session_end(data: dict[str, Any]) -> None:
-    key = session_key(data)
-    state = load_state(key)
+    key = stable_session_key(data)
+    state = load_state(key) if key else {}
 
-    transcript = (
-        data.get("transcript_path")
-        or os.environ.get("CURSOR_TRANSCRIPT_PATH")
-    )
+    transcript = data.get("transcript_path") or os.environ.get("CURSOR_TRANSCRIPT_PATH")
     transcript_tokens = estimate_tokens_from_transcript(transcript)
 
-    peak = int(state.get("peak_context_tokens", 0))
+    peak = as_int(state.get("peak_context_tokens", 0))
     if peak == 0 and transcript_tokens:
         peak = transcript_tokens
 
-    turns = int(state.get("turns", 0))
-    tool_calls = int(state.get("tool_calls", 0))
-    model = state.get("last_model")
+    observed_turns = as_int(state.get("turns", 0))
+    tool_calls = count_tool_calls(key) if key else 0
+    if tool_calls == 0:
+        tool_calls = as_int(state.get("tool_calls", 0))
+    model = data.get("model_id") or data.get("model") or state.get("last_model")
+    duration_ms = as_int(data.get("duration_ms"))
+    turns = priced_turn_count(
+        observed_turns,
+        transcript_tokens=transcript_tokens,
+        tool_calls=tool_calls,
+        duration_ms=duration_ms,
+    )
 
     cost = estimate_cost(
         turns=turns,
@@ -270,17 +371,16 @@ def handle_session_end(data: dict[str, Any]) -> None:
         model=model,
     )
 
-    duration_ms = int(data.get("duration_ms") or 0)
     duration_min = duration_ms / 60_000 if duration_ms else 0
-
     summary = {
         "timestamp": _now_iso(),
         "session_key": key,
         "reason": data.get("reason"),
         "duration_ms": duration_ms,
-        "turns": turns,
+        "observed_turns": observed_turns,
+        "turns": cost["priced_turns"],
         "tool_calls": tool_calls,
-        "compactions": int(state.get("compactions", 0)),
+        "compactions": as_int(state.get("compactions", 0)),
         "peak_context_pct": state.get("peak_context_pct"),
         "workspace": (data.get("workspace_roots") or [None])[0],
         **cost,
@@ -293,41 +393,40 @@ def handle_session_end(data: dict[str, Any]) -> None:
         f"({_fmt_tokens(cost['est_input_tokens'])} in / "
         f"{_fmt_tokens(cost['est_output_tokens'])} out) · "
         f"est. {_fmt_usd(cost['est_api_cost_usd'])} · "
-        f"{turns} turns · {tool_calls} tools"
+        f"{cost['priced_turns']} turns · {tool_calls} tools"
     )
     if duration_min >= 1:
         line += f" · {duration_min:.0f}m"
 
-    detail = (
-        f"Model: {model or 'unknown'} · peak ctx {_fmt_tokens(peak)}"
-    )
+    detail = f"Model: {model or 'unknown'} · peak ctx {_fmt_tokens(peak)}"
     if transcript_tokens:
         detail += f" · transcript ~{_fmt_tokens(transcript_tokens)}"
 
+    LAST_SUMMARY.parent.mkdir(parents=True, exist_ok=True)
     LAST_SUMMARY.write_text(f"{line}\n{detail}\n")
     notify("Cursor session cost (est.)", line)
 
-    delete_state(key)
-    print("{}")
+    if key:
+        delete_state(key)
 
 
 def main() -> None:
-    data = load_input()
-    event = data.get("hook_event_name", "")
-
-    handlers = {
-        "sessionStart": handle_session_start,
-        "stop": handle_stop,
-        "preCompact": handle_pre_compact,
-        "postToolUse": handle_post_tool_use,
-        "sessionEnd": handle_session_end,
-    }
-
-    handler = handlers.get(event)
-    if handler:
-        handler(data)
-    else:
-        print("{}")
+    try:
+        data = load_input()
+        event = data.get("hook_event_name", "")
+        handlers = {
+            "sessionStart": handle_session_start,
+            "stop": handle_stop,
+            "preCompact": handle_pre_compact,
+            "postToolUse": handle_post_tool_use,
+            "sessionEnd": handle_session_end,
+        }
+        handler = handlers.get(event)
+        if handler:
+            handler(data)
+    except Exception:
+        pass
+    print("{}")
 
 
 if __name__ == "__main__":

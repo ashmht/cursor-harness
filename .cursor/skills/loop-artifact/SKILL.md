@@ -92,9 +92,10 @@ Then choose at most one destination adapter:
 - Slack or email: `writing-compact.mdc`, `framing.mdc`, applicable voice rule
 - Markdown or repository file: native file editing and validation
 
-If one skill owns both purpose and destination, do not add an adapter. Read each
-selected skill before use. The child workflow owns its phases, review method,
-iteration limit, and stop or escalation contract.
+If one skill owns both purpose and destination, do not add an adapter. Follow
+the child skill's stop criteria. Read that skill only when this router does not
+already include its phase checklist. The child workflow owns its phases, review
+method, iteration limit, and stop or escalation contract.
 
 ## Add only missing gates
 

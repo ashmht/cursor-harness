@@ -1,6 +1,6 @@
 ---
 description: Rebase PR branches onto their latest remote base instead of merging the base branch
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Rebase PR Branches

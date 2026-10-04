@@ -22,7 +22,7 @@ PHASE 1 — SCOPE
 - One concrete example from the target stack (name the service, file, or metric).
 - What this is NOT (distinguish from adjacent concepts).
 
-PHASE 2 — DRAFT (read ~/.cursor/rules/julia-evans-voice.mdc)
+PHASE 2 — DRAFT (Julia Evans register: conversational opener, one traced example, numbered mistakes)
 Structure:
 1. Conversational opener — no thesis statement; acknowledge what's confusing
 2. What it is (plain language, 2-3 short paragraphs)
@@ -39,7 +39,7 @@ Citation requirement:
   section that maps each claim to its evidence.
 - Label inference as inference. Remove claims that cannot be verified.
 
-For load-bearing terms, add Fowler Bliki boxes (read ~/.cursor/rules/fowler-voice.mdc Bliki register):
+For load-bearing terms, add Fowler Bliki boxes:
   "**Term** is … It differs from **AdjacentTerm** because …"
 
 PHASE 3 — QUALITY STREAK (FF loop #009, N=2)
@@ -50,10 +50,14 @@ Pass 2 — Accuracy test: every claim verifiable against repo, runbook, or metri
 Stop after 2 consecutive passes.
 
 PHASE 4 — HUMANIZE
-Run humanizer with --voice-mdc julia-evans. Read framing.mdc.
+Apply this checklist. Open the humanizer skill only if a pattern is unclear:
+- Remove AI vocabulary, stacked hedges, and em dashes.
+- Vary sentence length.
+- Do not invent numbers, names, or anecdotes.
+- The Julia Evans voice wins over a generic tone.
 
-Deliver as: markdown file | wiki section | HTML (read
-~/.cursor/skills/loop-html-doc/SKILL.md if visual layout is needed).
+Deliver as: markdown file | wiki section | HTML. Use the HTML doc loop only
+when the page needs a visual layout this checklist does not specify.
 ```
 
 ## Verify / stop
@@ -72,12 +76,15 @@ Deliver as: markdown file | wiki section | HTML (read
 - Memory bank / agent context that must survive re-reads
 - XFN partners who need mechanics, not opinions
 
-## Skills to read
+## Deeper references
 
-1. `~/.cursor/rules/julia-evans-voice.mdc`
-2. `~/.cursor/rules/fowler-voice.mdc` (Bliki boxes only)
-3. `~/.cursor/skills/humanizer/SKILL.md`
-4. `~/.cursor/skills/technical-writing/SKILL.md` (if publishing externally)
+The phase checklist above is enough. Open one reference only when it does not
+answer the question in front of you:
+
+- julia-evans-voice, for the tutorial register
+- fowler-voice, for a Bliki box
+- humanizer, for a pattern the checklist does not name
+- technical-writing, only when the page is published outside the team
 
 ## Memory
 

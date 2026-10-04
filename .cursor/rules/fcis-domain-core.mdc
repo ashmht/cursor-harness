@@ -1,5 +1,8 @@
 ---
-globs: "domain/**, core/**, **/domain/**, **/core/**, **/ledger/**"
+description: >-
+  Functional-core rules for ledger and domain code. Installed with the fintech
+  profile. A generic core/ directory does not activate this rule.
+globs: "**/ledger/**,**/domain/**"
 alwaysApply: false
 ---
 # FCIS Domain Core

@@ -1,38 +1,22 @@
 version: 1
 
+# Primary language for this harness is Ruby.
+# Copy to .cursor/harness.yaml and keep that copy untracked.
+# If the repo uses Minitest instead of RSpec, change the test gate to
+# `bundle exec rake test`. Add another codebase only when that stack is present.
+
 codebases:
   application:
     roots:
       - .
     languages:
-      - python
+      - ruby
     context:
       - CLAUDE.md
-      - .memory-bank/python/architecture.md
-      - .memory-bank/python/testing.md
+      - .memory-bank/ruby/architecture.md
+      - .memory-bank/ruby/testing.md
     gates:
-      format:
-        - ruff format --check .
       lint:
-        - ruff check .
+        - bundle exec rubocop
       test:
-        - pytest
-
-  web:
-    roots:
-      - web
-    languages:
-      - typescript
-    context:
-      - web/CLAUDE.md
-      - .memory-bank/typescript/architecture.md
-      - .memory-bank/typescript/testing.md
-    gates:
-      format:
-        - npm run format:check
-      lint:
-        - npm run lint
-      test:
-        - npm test
-      build:
-        - npm run build
+        - bundle exec rspec

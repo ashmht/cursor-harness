@@ -11,12 +11,17 @@ The validator fails closed across five layers:
 1. **Filesystem:** rejects symlinks, private runtime directories, backup files,
    and unexpectedly large artifacts.
 2. **Identity and organization:** rejects absolute user-home paths, account
-   identifiers, private document URLs, and caller-supplied forbidden terms.
+   identifiers, private document URLs, unexpected email addresses, and
+   caller-supplied forbidden terms. When the root is its own git checkout, the
+   same checks run against the patches of every commit, so a deleted leak still
+   fails. Git author headers and commit-message trailers are not part of that
+   scan. Public attributions
+   `hello@cocoon-ai.com`, `you@example.com`, and `a@b.com` are allowed.
 3. **Secrets:** detects common token, credential, and private-key shapes.
 4. **Structure and reuse:** verifies skill and rule frontmatter, skill names,
    and references to installed local skills.
-5. **Syntax:** parses JSON, compiles Python in memory, and checks executable
-   shell-script permissions.
+5. **Syntax:** parses JSON, parses YAML with PyYAML, compiles Python in memory,
+   and runs `bash -n` on executable shell scripts.
 
 ## Private organization-term pass
 

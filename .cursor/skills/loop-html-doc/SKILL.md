@@ -41,9 +41,12 @@ Design system (default):
 - Print-friendly @media print block
 
 PHASE 3 — PROSE
-Read ~/.cursor/rules/julia-evans-voice.mdc for body and
-~/.cursor/rules/fowler-voice.mdc for asides. Run
-~/.cursor/skills/humanizer/SKILL.md before embedding prose in HTML.
+Write the body in the Julia Evans register and asides as Fowler definitions.
+Before embedding prose, apply this checklist. Open the humanizer skill only
+if a pattern is unclear:
+- Remove AI vocabulary, stacked hedges, and em dashes.
+- Vary sentence length.
+- Do not invent numbers, names, or anecdotes.
 
 PHASE 4 — BOEING 747 LOOP (FF #021, adapted for docs)
 Build a repeatable "inspection checklist" — same views every iteration:

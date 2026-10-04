@@ -1,6 +1,6 @@
 ---
 description: Default reasoning discipline — direct answers, stress-test premises, evidence-tagged claims, concise execution mode. Escalates to full red-team protocol when the user says "red team" or the decision has irreversible downside (deploy, money, compliance, customer impact). Do NOT apply to mechanical code chatter, build/test/CI narration, tool-call status messages, or when a dedicated voice/skill rule already owns the artifact (framing, larson-voice, staff-eng-writing, etc.).
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Truth-Seeking — Default Reasoning Discipline

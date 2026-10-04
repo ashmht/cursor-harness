@@ -16,6 +16,8 @@ args:
 
 # Example Skill
 
+The installer does not copy this directory. It is a template for a new skill.
+
 Use this skill when the user asks to (describe trigger conditions here).
 
 ## When This Skill Applies

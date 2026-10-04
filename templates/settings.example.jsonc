@@ -9,31 +9,27 @@
   "editor.renderWhitespace": "trailing",
 
   "files.watcherExclude": {
-    "**/.gradle/**": true,
-    "**/build/**": true,
+    "**/vendor/bundle/**": true,
     "**/node_modules/**": true,
     "**/.venv*/**": true,
-    "**/__pycache__/**": true
+    "**/__pycache__/**": true,
+    "**/tmp/cache/**": true
   },
   "search.exclude": {
-    "**/.gradle/**": true,
-    "**/build/**": true,
+    "**/vendor/bundle/**": true,
     "**/node_modules/**": true,
     "**/.venv*/**": true,
-    "**/__pycache__/**": true
+    "**/__pycache__/**": true,
+    "**/tmp/cache/**": true
   },
 
   "[json]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "python.defaultInterpreterPath": "/usr/bin/python3",
-  "[python]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    }
+  "[ruby]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
   },
   "[dockercompose]": {
     "editor.formatOnSave": true,
@@ -52,7 +48,5 @@
   "git.fetchOnPull": true,
   "git.statusLimit": 1000,
   "git.repositoryScanMaxDepth": 1,
-  "cursor.composer.textSizeScale": 1.15,
-  "workbench.colorTheme": "Quiet Light",
-  "window.autoDetectColorScheme": false
+  "cursor.composer.textSizeScale": 1.15
 }

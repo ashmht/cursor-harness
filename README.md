@@ -12,32 +12,47 @@ credentials, runtime state, or plugin caches.
 - `.cursor/rules/`: workflow, reasoning, writing, voice, and engineering rules.
 - `.cursor/skills/`: reusable skills for documentation, teaching, handoffs,
   presentations, writing, reviews, and multi-agent investigations.
-- `.memory-bank/`: a small example of durable cross-session learning.
+- `.memory-bank/`: Ruby architecture and testing standards, plus durable
+  cross-session learning. Ruby is the primary language pack.
 - `hooks/`: a local-only session cost estimator with no network calls.
 - `templates/`: sanitized examples for Cursor CLI config, MCP servers, hooks,
   editor settings, keybindings, and personal instructions.
-- `scripts/install.py`: a dry-run-first installer for rules, skills, and hooks.
+- `scripts/install.py`: a dry-run-first installer with `core`, `writing`, and
+  `fintech` profiles, plus a non-clobbering config merge.
 - `scripts/validate.py`: layered privacy, portability, secret, structure, and
   syntax validation.
+- `tests/`: behavior tests for the hook, validator, and installer.
 
 See [the export inventory](docs/inventory.md) for the inclusion and exclusion
 boundary.
 
 ## Quick start
 
-Clone and validate:
+Clone, install the validator dependency, and validate:
 
 ```bash
 git clone https://github.com/ashmht/cursor-harness.git
 cd cursor-harness
+pip install -r requirements.txt
+python3 -m unittest discover -s tests -v
 python3 scripts/validate.py
 ```
 
-Preview installation into `~/.cursor`:
+Preview the default `core` profile (workflow, Ruby language pack, review,
+cost, and the session hook):
 
 ```bash
 python3 scripts/install.py
 ```
+
+Writing skills and fintech rules are separate profiles:
+
+```bash
+python3 scripts/install.py --profile writing --profile fintech
+python3 scripts/install.py --profile all
+```
+
+`example-skill` stays in the repository as a template and is never installed.
 
 Apply only after reviewing the plan:
 
@@ -52,9 +67,13 @@ repository version:
 python3 scripts/install.py --apply --force
 ```
 
-The installer handles rules, skills, and hook scripts. Configuration templates
-are manual because blindly replacing editor, CLI, hook, or MCP configuration
-can remove existing integrations.
+Merge CLI, MCP, hook registration, editor settings, keybindings, and personal
+instructions without replacing keys you already set:
+
+```bash
+python3 scripts/install.py --config
+python3 scripts/install.py --config --apply
+```
 
 ## Configuration templates
 
@@ -70,12 +89,18 @@ can remove existing integrations.
 - `templates/harness.yaml.example`: project roots, context files, and build
   gates for a local `.cursor/harness.yaml`.
 
-Merge the desired keys into the corresponding local file. Keep credentials and
-account metadata outside version control.
+`--config` merges missing keys into the local files. It does not delete keys
+you already set. `--force` backs up a conflicting file and then lets the
+template win for keys that disagree. Keep credentials and account metadata
+outside version control.
+
+Editor settings target Ruby (two-space indent, Bundler `vendor/bundle` excluded)
+and do not pin a Python interpreter or a color theme. Keybindings include both
+`cmd+i` and `ctrl+i` for the Agent shortcut.
 
 The hook template points to `${HOME}/.cursor/hooks/session-cost.sh`, which is
-where the installer places the script. Merge those hook entries into
-`~/.cursor/hooks.json` after installation.
+where the core profile places the script. `--config` merges those hook entries
+into `~/.cursor/hooks.json`.
 
 ## Repository harness
 
@@ -98,7 +123,8 @@ present and otherwise infers the project from repository context.
 
 ## Validation
 
-The native validator runs five fail-closed layers:
+The native validator runs five fail-closed layers. YAML parsing needs PyYAML
+from `requirements.txt`.
 
 ```bash
 python3 scripts/validate.py
@@ -112,8 +138,9 @@ CURSOR_HARNESS_FORBIDDEN_TERMS_JSON='["company-name","internal-domain.example"]'
   python3 scripts/validate.py
 ```
 
-See [validation details](docs/validation.md). CI runs the native validation,
-shell syntax check, and installer dry run on every change.
+See [validation details](docs/validation.md). CI installs PyYAML, runs the unit
+tests, the native validation (including `bash -n` and YAML parsing), and
+installer dry runs on every change.
 
 ## Design principles
 

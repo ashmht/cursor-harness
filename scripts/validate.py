@@ -8,6 +8,7 @@ import json
 import os
 import re
 import stat
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -37,6 +38,13 @@ MACHINE_PATTERNS = {
     ),
 }
 
+EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+ALLOWED_EMAILS = {
+    "a@b.com",
+    "hello@cocoon-ai.com",
+    "you@example.com",
+}
+
 SECRET_PATTERNS = {
     "GitHub token": re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
     "Slack token": re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b"),
@@ -63,11 +71,16 @@ class Layer:
         return "PASS" if not self.errors else "FAIL"
 
 
+SKIP_PARTS = {".git", "__pycache__"}
+
+
 def repo_files(root: Path) -> list[Path]:
     return [
         path
         for path in sorted(root.rglob("*"))
-        if ".git" not in path.parts and (path.is_file() or path.is_symlink())
+        if not SKIP_PARTS.intersection(path.parts)
+        and path.suffix != ".pyc"
+        and (path.is_file() or path.is_symlink())
     ]
 
 
@@ -107,7 +120,91 @@ def validate_filesystem(root: Path, files: list[Path]) -> Layer:
             layer.errors.append(f"{relative}: generated or private state path")
         if ".bak-" in path.name or ".slim-backup-" in path.name:
             layer.errors.append(f"{relative}: backup artifact")
+    layer.errors.extend(tracked_generated(root))
     return layer
+
+
+def tracked_generated(root: Path) -> list[str]:
+    """Fail when bytecode was committed. Local __pycache__ is ignored."""
+    if not (root / ".git").exists():
+        return []
+    listed = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z"],
+        capture_output=True,
+        check=False,
+    )
+    if listed.returncode != 0:
+        return ["git-index: unable to list tracked files"]
+    errors: list[str] = []
+    for raw in listed.stdout.split(b"\0"):
+        if not raw:
+            continue
+        relative = raw.decode("utf-8", "replace")
+        parts = relative.split("/")
+        if "__pycache__" in parts or relative.endswith(".pyc"):
+            errors.append(f"{relative}: generated or private state path")
+    return errors
+
+
+def unwanted_email_offsets(text: str) -> list[int]:
+    offsets: list[int] = []
+    for match in EMAIL_RE.finditer(text):
+        if match.group(0).lower() not in ALLOWED_EMAILS:
+            offsets.append(match.start())
+    return offsets
+
+
+def scan_identity_text(
+    layer: Layer,
+    label: str,
+    text: str,
+    forbidden_terms: list[str],
+) -> None:
+    layer.checked += 1
+    for pattern_label, pattern in MACHINE_PATTERNS.items():
+        for match in pattern.finditer(text):
+            line = line_number(text, match.start())
+            layer.errors.append(f"{label}:{line}: {pattern_label}")
+    for offset in unwanted_email_offsets(text):
+        line = line_number(text, offset)
+        layer.errors.append(f"{label}:{line}: email address")
+    lowered = text.lower()
+    for term in forbidden_terms:
+        offset = lowered.find(term)
+        if offset >= 0:
+            line = line_number(text, offset)
+            layer.errors.append(f"{label}:{line}: external forbidden term matched")
+
+
+def history_text(root: Path) -> str | None:
+    """Return patches from every commit, excluding author headers and trailers.
+
+    None means this root is not its own git checkout. A failed read is an
+    empty string so the caller can fail closed. Commit messages are omitted
+    because trailers such as Co-authored-by carry author identity, not file
+    contents.
+    """
+    if not (root / ".git").exists():
+        return None
+    top = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if top.returncode != 0:
+        return ""
+    if Path(top.stdout.strip()).resolve() != root.resolve():
+        return None
+    log = subprocess.run(
+        ["git", "-C", str(root), "log", "--all", "--pretty=format:", "-p"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if log.returncode != 0:
+        return ""
+    return log.stdout
 
 
 def validate_identity(
@@ -116,24 +213,48 @@ def validate_identity(
     forbidden_terms: list[str],
 ) -> Layer:
     layer = Layer("identity-and-organization")
+    current_parts: list[str] = []
     for path in files:
         text = read_text(path)
         if text is None:
             continue
-        layer.checked += 1
         relative = path.relative_to(root).as_posix()
-        for label, pattern in MACHINE_PATTERNS.items():
-            for match in pattern.finditer(text):
-                line = line_number(text, match.start())
-                layer.errors.append(f"{relative}:{line}: {label}")
-        lowered = text.lower()
-        for term in forbidden_terms:
-            offset = lowered.find(term)
-            if offset >= 0:
-                line = line_number(text, offset)
-                layer.errors.append(
-                    f"{relative}:{line}: external forbidden term matched"
-                )
+        scan_identity_text(layer, relative, text, forbidden_terms)
+        current_parts.append(text)
+
+    history = history_text(root)
+    if history is None:
+        return layer
+    if history == "":
+        layer.errors.append("git-history: unable to read commit history")
+        return layer
+
+    current = "\n".join(current_parts)
+    layer.checked += 1
+    for pattern_label, pattern in MACHINE_PATTERNS.items():
+        for match in pattern.finditer(history):
+            snippet = match.group(0)
+            if snippet in current:
+                continue
+            line = line_number(history, match.start())
+            layer.errors.append(f"git-history:{line}: {pattern_label}")
+    for match in EMAIL_RE.finditer(history):
+        email = match.group(0)
+        if email.lower() in ALLOWED_EMAILS or email in current:
+            continue
+        line = line_number(history, match.start())
+        layer.errors.append(f"git-history:{line}: email address")
+    lowered_history = history.lower()
+    lowered_current = current.lower()
+    for term in forbidden_terms:
+        if term in lowered_current:
+            continue
+        offset = lowered_history.find(term)
+        if offset >= 0:
+            line = line_number(history, offset)
+            layer.errors.append(
+                f"git-history:{line}: external forbidden term matched"
+            )
     return layer
 
 
@@ -259,14 +380,43 @@ def validate_syntax(root: Path, files: list[Path]) -> Layer:
             mode = path.stat().st_mode
             if not mode & stat.S_IXUSR:
                 layer.errors.append(f"{relative}: shell script is not executable")
+            syntax = subprocess.run(
+                ["bash", "-n", str(path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if syntax.returncode != 0:
+                detail = syntax.stderr.strip().splitlines()
+                message = detail[-1] if detail else "bash -n failed"
+                layer.errors.append(f"{relative}: {message}")
         elif path.suffix in {".yaml", ".yml"} or path.name.endswith(
             (".yaml.example", ".yml.example")
         ):
             layer.checked += 1
-            text = path.read_text(encoding="utf-8")
+            try:
+                text = path.read_text(encoding="utf-8")
+            except UnicodeDecodeError as exc:
+                layer.errors.append(f"{relative}: invalid YAML: {exc}")
+                continue
             if "\t" in text:
                 layer.errors.append(f"{relative}: YAML contains tab indentation")
+            yaml_error = parse_yaml(text)
+            if yaml_error:
+                layer.errors.append(f"{relative}: {yaml_error}")
     return layer
+
+
+def parse_yaml(text: str) -> str | None:
+    try:
+        import yaml
+    except ImportError:
+        return "PyYAML is required to validate YAML (pip install -r requirements.txt)"
+    try:
+        yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        return f"invalid YAML: {exc}"
+    return None
 
 
 def parse_args() -> argparse.Namespace:

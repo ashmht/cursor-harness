@@ -1,15 +1,22 @@
 ---
-globs: "*.kt, *.kts, jvm-*/**"
+description: >-
+  Load the Ruby memory bank before changing Ruby code. Ruby is the primary
+  language pack for this harness.
+globs: "**/*.rb,**/*.rake,**/*.gemspec,**/Gemfile,**/Rakefile,**/config.ru"
 alwaysApply: false
 ---
 # Language Standards
 
+Ruby is the primary language for projects that use this harness.
+
 ## Memory Bank Structure
 
-Read the standards defined in your codebase's memory bank before making changes:
+Read the Ruby standards before changing Ruby files:
 
-- `.memory-bank/<lang>/architecture.md` — Tech stack, project structure, dependency management
-- `.memory-bank/<lang>/testing.md` — Testing standards, tools, coverage requirements
+- `.memory-bank/ruby/architecture.md` — stack, layout, dependencies
+- `.memory-bank/ruby/testing.md` — RSpec or Minitest, RuboCop, commands
+
+Use `.memory-bank/<lang>/` the same way if a repo later adds another language pack.
 
 ## Behavioral Guidelines
 
