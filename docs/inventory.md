@@ -11,8 +11,10 @@ a mirror of the entire Cursor home directory.
   guards, and reusable engineering rules.
 - Voice and writing rules that contain no workplace-specific examples.
 - Portable authored skills for documentation, debugging, PR ownership, skill
-  testing, teaching, presentations, reviews, handoffs, writing, and multi-agent
-  investigations.
+  testing, teaching, codebase onboarding, presentations, reviews, handoffs,
+  writing, and multi-agent investigations. `codebase-onboarding` ships generic
+  templates only; the company maps it generates belong in that company's
+  repository, not here.
 - Active shell safety guards (git push, zsh word-splitting, docker env printing,
   and section-safe PR body edits) plus a local session-cost hook.
 - Sanitized examples for CLI preferences, editor settings, keybindings, hooks,
