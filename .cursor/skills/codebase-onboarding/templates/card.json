@@ -62,9 +62,9 @@
     ]
   },
   "depth_ladder": {
-    "eli5": "<>",
-    "practitioner": "<>",
-    "expert": "<>"
+    "eli5": "<the idea for someone with no context>",
+    "practitioner": "<what an engineer here needs to work in it>",
+    "expert": "<the trade-offs and the sharp edges>"
   },
   "curveballs": [
     {

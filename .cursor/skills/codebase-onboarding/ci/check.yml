@@ -1,0 +1,29 @@
+name: "{{skill_name}} check"
+
+on:
+  pull_request:
+    paths:
+      - "{{dest}}/**"
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Finished and linked
+        run: "python3 {{dest}}/scripts/lint_skill.py"
+      - name: Citations point at live code
+        run: "python3 {{dest}}/scripts/check_citations.py"
+      - name: Card matches capabilities.md
+        run: "python3 {{dest}}/scripts/build_card.py --check"
