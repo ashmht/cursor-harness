@@ -46,6 +46,7 @@ RULE_PROFILES = {
 
 SKILL_PROFILES = {
     "core": {
+        "codebase-onboarding",
         "compact-chat",
         "critical-pr-review",
         "cross-collab-project-contract",
