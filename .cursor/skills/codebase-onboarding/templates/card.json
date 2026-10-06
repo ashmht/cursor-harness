@@ -1,0 +1,84 @@
+{
+  "topic": "The {{company}} codebase",
+  "audience": "new engineers, staff engineers, and agents who need context before building or debugging",
+  "one_liner": "<One or two sentences: what the company sells, what owns the data and money logic, and the one naming quirk everyone trips on.>",
+  "analogy": {
+    "text": "<A physical-world analogy that maps the core nouns.>",
+    "seam": "<Where the analogy breaks, and why that matters.>"
+  },
+  "picture": [
+    {
+      "type": "graph",
+      "nodes": [
+        {
+          "id": "clients",
+          "label": "<Clients>",
+          "col": 1,
+          "row": 0,
+          "shape": "pill"
+        },
+        {
+          "id": "api",
+          "label": "<API>",
+          "col": 1,
+          "row": 1
+        },
+        {
+          "id": "jobs",
+          "label": "<Workers>",
+          "col": 0,
+          "row": 2
+        },
+        {
+          "id": "db",
+          "label": "<Datastores>",
+          "col": 1,
+          "row": 2,
+          "shape": "cloud"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clients",
+          "to": "api"
+        },
+        {
+          "from": "api",
+          "to": "jobs"
+        },
+        {
+          "from": "api",
+          "to": "db"
+        }
+      ],
+      "caption": "<Runtime map. Add the rest of the diagram set from references/visuals.md.>"
+    }
+  ],
+  "capabilities": {},
+  "how_it_works": {
+    "intro": "<One traced example, for example one purchase.>",
+    "steps": [
+      "<step with `path`>"
+    ]
+  },
+  "depth_ladder": {
+    "eli5": "<the idea for someone with no context>",
+    "practitioner": "<what an engineer here needs to work in it>",
+    "expert": "<the trade-offs and the sharp edges>"
+  },
+  "curveballs": [
+    {
+      "lens": "<lens>",
+      "question": "<a hard question>",
+      "answer": "<a crisp, cited answer>"
+    }
+  ],
+  "check_yourself": [
+    {
+      "q": "<question>",
+      "a": "<answer>"
+    }
+  ],
+  "teach_back": "<A 60-second explanation a newcomer can give from memory.>",
+  "grounding": "Verified against commit `{{commit}}` ({{date}})."
+}

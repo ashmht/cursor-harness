@@ -10,8 +10,9 @@ credentials, runtime state, or plugin caches.
 ## What is here
 
 - `.cursor/rules/`: workflow, reasoning, writing, voice, and engineering rules.
-- `.cursor/skills/`: reusable skills for documentation, teaching, handoffs,
-  presentations, writing, reviews, and multi-agent investigations.
+- `.cursor/skills/`: reusable skills for documentation, teaching, codebase
+  onboarding, handoffs, presentations, writing, reviews, and multi-agent
+  investigations.
 - `.memory-bank/`: Ruby architecture and testing standards, plus durable
   cross-session learning. Ruby is the primary language pack.
 - `hooks/`: a local-only session cost estimator with no network calls.

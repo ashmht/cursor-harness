@@ -8,8 +8,10 @@ a mirror of the entire Cursor home directory.
 - Session workflow, memory-bank conventions, progress tracking, and reusable
   engineering rules.
 - Voice and writing rules that contain no workplace-specific examples.
-- Portable authored skills for documentation, teaching, presentations,
-  reviews, handoffs, writing, and multi-agent investigations.
+- Portable authored skills for documentation, teaching, codebase onboarding,
+  presentations, reviews, handoffs, writing, and multi-agent investigations.
+  `codebase-onboarding` ships generic templates only; the company maps it
+  generates belong in that company's repository, not here.
 - A local session-cost hook that stores estimates under the user's Cursor home.
 - Sanitized examples for CLI preferences, editor settings, keybindings, hooks,
   and public MCP integrations.
