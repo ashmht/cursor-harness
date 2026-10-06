@@ -43,6 +43,7 @@ the same verified map. The output is a folder, not a chat answer.
     security.md               staff: trust boundaries, auth, sensitive data, compliance scope
     onboarding-path.md        day 1, week 1, and a 30/60/90 for staff
   scripts/
+    lint_skill.py             fails on unfilled placeholders, broken links, missing staff files
     check_citations.py        fails when a cited path or line no longer exists
     build_card.py             copies capabilities.md into card.json and re-renders
     render_card.py            card.json to HTML
@@ -61,7 +62,10 @@ The four staff files are optional for a new-engineer onboarding and required for
    ```
 
    It copies `templates/`, fills the company name, today's date and the current commit, and refuses
-   to overwrite an existing folder unless you pass `--force`.
+   to overwrite an existing folder unless you pass `--force`. Add `--ci` to also write a GitHub
+   Actions workflow that runs all three checks on PRs touching the skill and every Monday, which
+   catches citations broken by code changes elsewhere. Set `audience` in `onboarding.config.json` to
+   `new` if the staff files aren't wanted.
 3. **Discover.** Follow [references/discovery.md](references/discovery.md). It lists, per file, the
    commands that surface the facts (entry points, manifests, webhooks, CODEOWNERS, CI, git history).
    Use parallel explore subagents for large repos, one per area, and spot-check what they return.
@@ -69,7 +73,9 @@ The four staff files are optional for a new-engineer onboarding and required for
    it once filled. Staff files follow [references/staff-lens.md](references/staff-lens.md).
 5. **Draw.** Build the diagram set in [references/visuals.md](references/visuals.md) into `card.json`,
    then run `scripts/build_card.py` to pull in the capability table and render the HTML.
-6. **Verify.** Run `scripts/check_citations.py` until it reports 0 errors and 0 warnings, then run the
+6. **Verify.** Run `scripts/lint_skill.py` until it reports 0 errors (a fresh scaffold fails it on
+   purpose; the citation checker alone passes an empty skill, because it skips `<...>` placeholders).
+   Then run `scripts/check_citations.py` until it reports 0 errors and 0 warnings, then the
    two-test review loop in [references/review-loop.md](references/review-loop.md) until two rounds in
    a row pass, capped at 10.
 7. **Ship.** Open a PR in the target repo. Add the skill to the repo's skill index if it has one.
@@ -115,6 +121,7 @@ failed review round, not a nice-to-have.
 
 ## Keeping it fresh
 
-The generated `maintaining.md` carries the freshness steps. In short: run
+The generated `maintaining.md` carries the freshness steps. In short: `scripts/lint_skill.py` warns
+when a stamp is older than `max_age_days` (default 90); then run
 `scripts/check_citations.py --since <stamped commit>`, re-read every citation into the files it lists,
 fix the Markdown, run `scripts/build_card.py`, and restamp the commit.

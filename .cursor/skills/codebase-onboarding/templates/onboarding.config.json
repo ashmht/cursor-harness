@@ -1,5 +1,7 @@
 {
   "html": "{{html}}",
+  "audience": "staff",
+  "max_age_days": 90,
   "roots": [],
   "preferred_roots": [],
   "skip_prefixes": [],

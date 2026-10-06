@@ -5,8 +5,10 @@ Usage, from the target repo root:
   python3 <codebase-onboarding>/scripts/scaffold.py --company "Acme" --dest .cursor/skills/acme-expert
 
 Copies templates/ and the checker, card builder and renderer into --dest, fills the company name,
-skill name, today's date and the current commit, and renders a first HTML card. Refuses to write
-into an existing folder unless --force is given.
+skill name, today's date and the current commit, and renders a first HTML card. With --ci, also
+writes .github/workflows/<skill>-check.yml, which runs the lint, the citation checker and the card
+check on PRs that touch the skill and every Monday. Refuses to write into an existing folder unless
+--force is given.
 """
 
 import argparse
@@ -18,7 +20,8 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES = SKILL_DIR / "templates"
-SCRIPTS = ("check_citations.py", "build_card.py", "render_card.py")
+SCRIPTS = ("check_citations.py", "lint_skill.py", "build_card.py", "render_card.py")
+CI_TEMPLATE = SKILL_DIR / "ci" / "check.yml"
 
 
 def git(*args, cwd):
@@ -39,6 +42,7 @@ def main(argv=None):
     ap.add_argument("--company", required=True, help="company or product name, as people say it")
     ap.add_argument("--dest", required=True, help="folder to create, for example .cursor/skills/acme-expert")
     ap.add_argument("--html", default="codebase-map.html", help="file name for the rendered card")
+    ap.add_argument("--ci", action="store_true", help="also write a GitHub Actions workflow that checks the skill")
     ap.add_argument("--force", action="store_true", help="write into an existing folder")
     args = ap.parse_args(argv)
 
@@ -77,6 +81,15 @@ def main(argv=None):
         [sys.executable, str(dest / "scripts" / "render_card.py"), str(dest / "card.json"), "-o", str(dest / args.html)],
         stdout=subprocess.DEVNULL,
     )
+    if args.ci:
+        workflow = repo / ".github" / "workflows" / f"{dest.name}-check.yml"
+        if workflow.exists() and not args.force:
+            print(f"error: {workflow} already exists; pass --force to replace it", file=sys.stderr)
+            return 2
+        workflow.parent.mkdir(parents=True, exist_ok=True)
+        workflow.write_text(fill(CI_TEMPLATE.read_text(), values))
+        print(f"wrote {workflow.relative_to(repo).as_posix()}")
+
     print(f"created {values['dest']} for {args.company} at commit {values['commit']}")
     print("next: follow references/discovery.md in the codebase-onboarding skill to fill each file")
     return 0

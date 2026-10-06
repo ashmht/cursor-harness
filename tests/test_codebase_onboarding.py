@@ -88,5 +88,73 @@ class CodebaseOnboardingTests(unittest.TestCase):
         self.assertIn("past the end of the file", result.stdout)
 
 
+    def fill_everything(self) -> None:
+        commit = run("git", "rev-parse", "--short=11", "HEAD", cwd=self.repo).stdout.strip()
+        for path in [self.dest / "SKILL.md", self.dest / "maintaining.md", *(self.dest / "references").glob("*.md")]:
+            body = f"# {path.stem}\n\nVerified against commit `{commit}`.\n\n## Details\n\nFilled in.\n"
+            if path.name == "SKILL.md":
+                body = "---\nname: acme-expert\ndescription: Acme map.\n---\n\n" + body
+            path.write_text(body)
+        card = json.loads((self.dest / "card.json").read_text())
+
+        def scrub(value):
+            if isinstance(value, str):
+                return "filled" if "<" in value else value
+            if isinstance(value, list):
+                return [scrub(v) for v in value]
+            if isinstance(value, dict):
+                return {k: scrub(v) for k, v in value.items()}
+            return value
+
+        (self.dest / "card.json").write_text(json.dumps(scrub(card), indent=2))
+
+    def test_lint_fails_on_fresh_scaffold(self) -> None:
+        result = self.script("lint_skill.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("unfilled placeholder", result.stdout)
+        self.assertIn("instruction comment left in", result.stdout)
+
+    def test_lint_passes_when_filled(self) -> None:
+        self.fill_everything()
+        result = self.script("lint_skill.py")
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_lint_catches_broken_links(self) -> None:
+        self.fill_everything()
+        flows = self.dest / "references" / "flows.md"
+        flows.write_text(flows.read_text() + "\nSee [details](#details), [gone](debugging.md#nope) and [missing](nope.md).\n")
+        result = self.script("lint_skill.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing heading #nope", result.stdout)
+        self.assertIn("missing file nope.md", result.stdout)
+        self.assertNotIn("#details", result.stdout)
+
+    def test_lint_ignores_generics_html_and_code_blocks(self) -> None:
+        self.fill_everything()
+        glossary = self.dest / "references" / "glossary.md"
+        glossary.write_text(glossary.read_text() + "\n`Promise<string>` and x < y and z > w.<br>\n\n```\n<placeholder in code>\n```\n")
+        self.assertEqual(self.script("lint_skill.py").returncode, 0)
+
+    def test_lint_requires_staff_files_only_for_staff(self) -> None:
+        self.fill_everything()
+        (self.dest / "references" / "decisions.md").unlink()
+        result = self.script("lint_skill.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("decisions.md", result.stdout)
+        config_path = self.dest / "onboarding.config.json"
+        config = json.loads(config_path.read_text())
+        config["audience"] = "new"
+        config_path.write_text(json.dumps(config))
+        self.assertEqual(self.script("lint_skill.py").returncode, 0)
+
+    def test_scaffold_ci_writes_workflow(self) -> None:
+        dest = self.repo / ".cursor" / "skills" / "beta-expert"
+        result = run(sys.executable, str(SCAFFOLD), "--company", "Beta", "--dest", str(dest), "--ci", cwd=self.repo)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        workflow = (self.repo / ".github" / "workflows" / "beta-expert-check.yml").read_text()
+        self.assertNotIn("{{", workflow)
+        self.assertIn(".cursor/skills/beta-expert/scripts/lint_skill.py", workflow)
+
+
 if __name__ == "__main__":
     unittest.main()

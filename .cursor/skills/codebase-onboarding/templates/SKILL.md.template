@@ -1,6 +1,6 @@
 ---
 name: {{skill_name}}
-description: "Codebase map of {{company}} for onboarding and debugging: architecture, data model, product capabilities to code, traced flows, recipes, debugging runbooks, vendors, internal tools<STAFF: , architecture decisions and migrations in flight, ownership, the path to production, scale and SLOs, trust boundaries>. Use when someone is new, asks where X lives or how X works end to end, or needs to pick which specialist skill to load."
+description: "Codebase map of {{company}} for onboarding and debugging: architecture, data model, product capabilities to code, traced flows, recipes, debugging runbooks, vendors, internal tools, <staff audience only, otherwise delete: architecture decisions and migrations in flight, ownership, the path to production, scale and SLOs, trust boundaries>. Use when someone is new, asks where X lives or how X works end to end, or needs to pick which specialist skill to load."
 ---
 
 # {{company}} expert: the codebase map

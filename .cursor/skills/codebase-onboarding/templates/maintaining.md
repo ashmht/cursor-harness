@@ -19,8 +19,13 @@ Every reference starts with the commit it was verified against. Before trusting 
 skill, or after editing it, run from the repo root:
 
 ```bash
+python3 {{dest}}/scripts/lint_skill.py
 python3 {{dest}}/scripts/check_citations.py --since <stamped commit>
 ```
+
+`scripts/lint_skill.py` fails on unfilled placeholders, leftover instruction comments, broken links or
+anchors, and missing staff files, and warns when a stamp is older than `max_age_days` in
+`onboarding.config.json`. The citation checker reports:
 
 - **ERROR:** a cited file is gone, or a cited line is past the end of the file. Exits 1.
 - **WARN:** the code near a cited line no longer names the identifier the sentence names, or a bare
