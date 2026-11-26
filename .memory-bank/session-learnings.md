@@ -19,3 +19,5 @@ Max 20 entries. Eviction policy:
 - [2026-10-04] Session-cost hooks fail open, print the turn count they priced, and refuse a shared daily key when an event has no stable session id. Tool counts are append-only.
 - [2026-10-04] Install rules and skills by profile. `core` is the default. Writing and fintech are opt-in. `example-skill` is a template and is not installed.
 - [2026-10-04] The language pack is Ruby (`.memory-bank/ruby/`, RSpec or Minitest, RuboCop). The harness scripts themselves stay Python.
+- [2026-11-25] A recurring mistake is a failed prose rule: turn repeats into an active mechanism (a `beforeShellExecution` guard hook, validator check, or test) rather than adding another paragraph of instructions.
+- [2026-11-25] Keep bulk reads out of the parent chat with a read-only `scout` subagent, and run pre-PR self-review in a blind cross-vendor `critic` subagent without the authoring chat history.

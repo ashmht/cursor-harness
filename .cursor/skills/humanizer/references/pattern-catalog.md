@@ -1,6 +1,6 @@
 # Humanizer pattern catalog
 
-Read this file whenever running `detect`, `rewrite`, or `edit`. Scan all 46
+Read this file whenever running `detect`, `rewrite`, or `edit`. Scan all 52
 patterns. Mechanical fixes may be applied automatically. Specificity, stakes,
 examples, numbers, and anecdotes must obey the fabrication boundary in
 `../SKILL.md`.
@@ -27,28 +27,43 @@ examples, numbers, and anecdotes must obey the fabrication boundary in
    bolster, crucial, delve, enduring, enhance, foster, garner, highlight,
    interplay, intricate, key, landscape, leverage, multifaceted, notably,
    pivotal, realm, showcase, tapestry, testament, underscore, utilize,
-   valuable, vibrant, moreover, furthermore, "it's worth noting", and "in
-   terms of". Replace with plain language or delete.
+   valuable, vibrant, moreover, furthermore, quietly ("quietly shipped"),
+   meticulous, deep dive, facilitate, empower, streamline, harness,
+   transformative, "it's worth noting", and "in terms of". Replace with plain
+   language or delete. A word used in its technical sense is not a hit:
+   "critical" severity, a "gated" feature, an API "key", a "robust" estimator.
 - **P8 Copula avoidance.** Detect "serves as", "stands as", "represents",
    "boasts", and "features" where `is`, `are`, or `has` is clearer.
 
 ## Language and style (P9-P18)
 
-- **P9 Negative parallelism.** Detect repeated "not only X but Y" or "not
-   just X, it's Y". State the point directly.
+- **P9 Negative parallelism.** Detect "not only X but Y", "not just X, it's
+   Y", "X rather than Y", the same contrast split across two sentences ("This
+   doesn't mean X. It means Y."), and clipped tails ("..., no guessing"). One
+   sighting is enough. State the point directly; keep a contrast only when the
+   reader actually holds the belief being corrected.
 - **P10 Rule of three.** Detect forced triads, especially abstract nouns.
     Use the natural number of items.
 - **P11 Synonym cycling.** Detect unnecessary renaming of the same entity.
-    Repeat the clearest term.
+    Repeat the clearest term. *Weak alone*: Wikipedia now lists it as a
+    human habit.
 - **P12 False ranges.** Detect "from X to Y" when X and Y are not a real
-    spectrum. Name the items directly.
-- **P13 Em dash.** Any U+2014 em dash is a hit. Replace it with punctuation
-    appropriate to the sentence.
+    spectrum. Name the items directly. *Weak alone*, for the same reason.
+- **P13 Dashes.** Any U+2014 em dash is a hit, and so is an en dash (U+2013)
+    or a spaced ` -- ` used to join clauses. Leave dashes in code, URLs, and
+    numeric ranges ("10–12"). Replace each with punctuation appropriate to
+    the sentence, not with a semicolon or colon every time.
 - **P14 Formatting overuse.** Detect bold on routine nouns, emoji headers,
-    and formatting that does not fit the destination. Strip it.
+    arrows (`→`) used as connectors or decoration in prose, a horizontal rule
+    between every section, and formatting that does not fit the destination.
+    Strip it.
 - **P15 Structured-list syndrome.** Detect bullets shaped as
-    `**Bold label:** prose` and lists that are really paragraphs. Restore prose
-    unless the content is genuinely parallel or sequential.
+    `**Bold label:** prose`, lists that are really paragraphs, and short
+    messages rebuilt as labeled sections (`Root cause:` / `Impact:` /
+    `Next steps:`, `Why` / `What` / `Impact`, `TL;DR` on a five-line note).
+    Restore prose unless the content is genuinely parallel or sequential, or
+    the labels belong to a format the team repeats (a weekly
+    Progress / Plans / Problems update, "why it matters:" in a launch post).
 - **P16 Title-case headings.** Use sentence case unless the destination's
     style requires title case.
 - **P17 Typographic fingerprints.** Detect smart-quote normalization and
@@ -70,8 +85,16 @@ examples, numbers, and anecdotes must obey the fabrication boundary in
 - **P22 Filler phrases.** Delete words that do not change the claim.
 - **P23 Excessive hedging.** Detect stacked hedges such as "could potentially
     possibly". Keep one honest uncertainty marker.
-- **P24 Generic positive conclusions.** Cut "the future looks bright",
-    "exciting times lie ahead", and similar wrap-ups.
+- **P24 Generic conclusions and one-line closers.** Cut "the future looks
+    bright", "exciting times lie ahead", and similar wrap-ups. Also cut a short
+    final line that restates the paragraph ("That's the real win.", "That
+    distinction matters.", "Let that sink in."), a sentence that names what the
+    example just showed, and rows of dramatic fragments ("No prior. No
+    nostalgia."). One sighting is enough. Keep a short line only when it adds a
+    new fact or consequence. Lines that tell the reader how to weigh what
+    they just read count too: "That last part matters more than it sounds",
+    "The key point is", "As you can see". Delete a fake-profound closer
+    outright; do not rewrite it into a better metaphor.
 - **P25 Hallucination markers.** Flag suspicious dates, numbers, obscure
     claims, or nonexistent sources for verification. Never repair by guessing.
 - **P26 Perfect/error alternation.** Detect abrupt alternation between
@@ -82,8 +105,10 @@ examples, numbers, and anecdotes must obey the fabrication boundary in
     does not render Markdown.
 - **P29 Comprehensive-overview opening.** Cut "This comprehensive guide",
     "In this article", and "Let's dive into". Start with the claim.
-- **P30 Uniform sentence length.** Detect three or more similarly sized
-    sentences. Vary length naturally without inventing content.
+- **P30 Uniform rhythm.** Detect three or more similarly sized sentences, and
+    paragraphs that all share one shape (claim, two supports, short kicker).
+    Rewrites cause this as often as drafts do. Fix it by merging, reordering, or
+    developing sentences, never by chopping them into fragments.
 
 ## Emerging patterns (P31-P43)
 
@@ -114,7 +139,10 @@ examples, numbers, and anecdotes must obey the fabrication boundary in
     fact "represents", "symbolizes", or "embodies". State the fact and
     consequence.
 - **P41 Infomercial hooks.** Delete "The catch?", "The kicker?", "Here's the
-    thing", "The brutal truth", and similar viral pauses.
+    thing", "The brutal truth", and similar viral pauses. Also delete
+    lone-expert setups ("What most people get wrong", "Here's what nobody
+    tells you", "The part everyone misses") and staged reveals ("What if I
+    told you", "Plot twist:", "Honestly?" before a routine claim).
 - **P42 Erratic inline bolding.** Strip patternless mid-paragraph bold. Keep
     it only for a consistent semantic reason such as glossary terms or UI
     labels.
@@ -127,23 +155,65 @@ examples, numbers, and anecdotes must obey the fabrication boundary in
     primers, and definitions the named audience already knows. Match the
     calibration sample's gloss ratio. Cut the gloss.
 - **P45 Stakelessness.** Detect neutral reporting with no owned claim,
-    admitted downside, or estimate. Never invent a position. Insert
-    `[INSERT: your actual read / downside you would admit]` when the author has
-    not supplied one.
+    admitted downside, or estimate. Never invent a position. When the author
+    has not supplied one, ask for their read in the questions after the text.
 - **P46 Fabricated specificity.** Detect any anecdote, number, example,
     identifier, or sensory detail introduced by the rewrite rather than the
-    source or author. Remove it or replace it with
-    `[INSERT: a real example here]`.
+    source or author. Remove it, and ask the author for the real one after the
+    text.
+
+## Staging and self-reference (P47-P52)
+
+- **P47 Arguing with no one.** Detect defenses against an objection nobody
+    raised ("To be clear", "I'm not saying", "Don't get me wrong", "This
+    isn't about X") and rejected options nobody proposed ("A tempting
+    approach would be...", "One might be tempted to..."). Cut the defense;
+    if it holds a real claim, state the claim. Keep an objection the text
+    attributes to someone, or an option a reader would actually weigh.
+- **P48 Sayings that sound deep.** Detect "at its core", "the real question
+    is", "fundamentally", "what really matters", "the heart of the matter",
+    and aphorisms such as "X is the language of Y" or "X becomes a trap".
+    Replace the saying with the specific claim, or cut it.
+- **P49 Colon reveals.** Detect a noun phrase built up for drama, then a
+    colon and the payoff: "The detail that makes it work: a second agent
+    grades it.", "The best part: it learns."
+    Write it as a plain sentence. A short label the author uses as a message
+    opener ("Fix:", "Heads up:", "FYI:", "Update:") is ordinary Slack, not a
+    hit.
+- **P50 Writing about the document.** Detect history of what the text
+    replaced ("was added to replace the previous approach"), narration of
+    method ("figures come from each vendor's published pricing; anything we
+    could not confirm is marked"), and layout the reader can already see
+    ("the sections follow rollout order", "the table below compares"). Cut
+    it; rewording it ("arranged" for "follow") is not a fix. Keep previous-version history only in
+    changelogs and migration notes, and keep a caveat that changes what the
+    reader does.
+- **P51 Vague association.** Detect "associated with", "linked to", "tied
+    to", "connected to", and "in connection with" where the text knows the
+    real relationship. "He is associated with the orchestra, which he
+    founded" becomes "He founded the orchestra"; a synonym is not a fix. If the relationship is unknown, keep the vague
+    wording rather than guess.
+- **P52 Repeated sentence openings.** Detect three or more sentences in a row
+    opening with the same subject or word. Merge them or begin with the
+    action. Deliberate repetition for rhythm stays.
 
 ## Structural checks
 
-- **Burstiness:** avoid three consecutive sentences with similar length. Use
-  short, medium, and long sentences when the thought naturally supports them.
+- **Burstiness:** avoid three consecutive sentences with similar length, and
+  let length follow the thought. Manufactured rhythm (fragments, kickers) is
+  a P30 hit of its own.
 - **Information density:** each sentence must add a fact, claim, example,
   concession, or transition the argument needs.
 - **Bullets versus prose:** use bullets for three or more parallel,
   independently scannable items; use numbered lists for real dependency order;
   keep arguments in prose. Never use `**Bold label:** description` bullets.
-- **Flows:** show a multi-hop sequence as `A → B → C`, then explain only the
-  non-obvious hop. Use real state names and values; otherwise insert an intake
-  prompt.
+- **Sequences:** write a multi-hop sequence as a sentence with real state
+  names ("the report never loaded, so the wire had nothing to match"). Use an
+  arrow chain only inside a diagram, code, or a source that already had one.
+
+## Weak alone
+
+In detect mode these count only when other tells share the passage: P11, P12,
+P13 (a single dash), P17, P23 (one honest hedge), P30 (one even run), P52, and
+a single P7 word. Do not report an isolated hit as a finding. Rewrite and edit modes
+still apply the mechanical fix, such as replacing the dash.

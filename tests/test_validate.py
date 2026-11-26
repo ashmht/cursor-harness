@@ -123,6 +123,27 @@ class ValidateTests(unittest.TestCase):
             layer = self.mod.validate_identity(root, self.mod.repo_files(root), [])
             self.assertEqual(layer.errors, [])
 
+    def test_agent_frontmatter_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agents = root / ".cursor" / "agents"
+            agents.mkdir(parents=True)
+            (agents / "bad.md").write_text("---\nname: wrong\ndescription: hi\n---\nbody\n", encoding="utf-8")
+            layer = self.mod.validate_structure(root, self.mod.repo_files(root))
+            self.assertTrue(any("wrong" in error for error in layer.errors))
+            self.assertTrue(any("missing agent frontmatter model" in error for error in layer.errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agents = root / ".cursor" / "agents"
+            agents.mkdir(parents=True)
+            (agents / "scout.md").write_text(
+                "---\nname: scout\ndescription: fast explorer\nmodel: composer-2.5\nreadonly: true\n---\nbody\n",
+                encoding="utf-8",
+            )
+            layer = self.mod.validate_structure(root, self.mod.repo_files(root))
+            self.assertEqual(layer.errors, [])
+
 
 if __name__ == "__main__":
     unittest.main()

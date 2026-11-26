@@ -48,6 +48,11 @@ decision.
 - **Exact deadline.** Use a date and timezone, never "soon" or "EOW".
 - **Short paragraphs.** Keep the main message readable on a phone.
 - **Name assumptions.** Give readers the exact premise to challenge.
+- **Staff+ technical posture.** When replying on technical topics, verify the
+  code, data, or docs first and bring an opinionated, verified solution. Never
+  ask an open-ended "how should we do this?" question; frame questions as
+  bounded checks against your proposed path ("verified X, planning to do Y —
+  any reason not to?").
 
 ## 4. Remove AI tells
 
@@ -77,4 +82,5 @@ second block for supporting evidence.
 - Owners, dates, assumptions, and decisions are explicit.
 - Vocabulary matches the least technical primary reader.
 - Every agreement claim is evidence-backed.
-- No generic praise, empty sign-off, emoji, or uniform cadence.
+- No generic praise, empty sign-off, uniform cadence, or emoji the destination
+  does not clearly expect.

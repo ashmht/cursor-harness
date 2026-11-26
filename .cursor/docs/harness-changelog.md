@@ -2,6 +2,31 @@
 
 Track changes to agent harness infrastructure.
 
+## 2026-11-25 — Subagents, active guard hooks, and upgraded review/writing stack
+
+- Added `.cursor/agents/` (`coder`, `critic`, `scout`, `verifier`) for
+  multi-vendor routing, read-only context offloading, and blind cross-vendor
+  PR review; wired into `scripts/install.py` (`core` profile) and
+  `scripts/validate.py`.
+- Added portable `beforeShellExecution` guard hooks under `hooks/` and
+  `templates/hooks.example.json`: `guard-git-push.sh` (blocks pushes to
+  `main`/`master`, plain `--force`/`+refspec`, and unpinned
+  `--force-with-lease`), `guard-zsh-split.sh` (catches zsh unquoted list
+  expansions and `=`-word expansion), `guard-docker-env.sh` (blocks printing
+  container environments), and `guard-gh-pr-body.sh` + `pr-body-edit.py`
+  (section-scoped PR body updates).
+- Updated `workflow.mdc` with PR risk-tiering, blind subagent isolation, model
+  routing, fresh-proof discipline before claiming done, and mechanism-first
+  learning capture.
+- Added `check-sources-first.mdc` and `slack-send-confirmation.mdc`; updated
+  `framing.mdc`, `writing-compact.mdc` (Staff+ technical posture, prose over
+  label scaffolding), and `truth-seeking.mdc` (real artifact beats fixture).
+- Added `pr-critical-thinking`, `systematic-debugging`, and `testing-skills`
+  skills; upgraded `critical-pr-review` (performance,
+  observability, boot/load-order, pending-review script), `humanizer`
+  (52-pattern pass + `references/messages.md`), `compact-chat`, and
+  `orchestrator-experts-judge`.
+
 ## 2026-10-04 — Review fixes, Ruby language pack
 
 - Session-cost hook fails open, prices the turn count it prints, reads the

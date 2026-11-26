@@ -92,6 +92,7 @@ All three must be true:
 | A single existing specialist skill already covers the whole question | Invoke that skill directly. OEJ is for cross-skill synthesis. |
 | Real-time or latency-critical work (seconds matter) | Single agent; capture OEJ-shape lessons afterward. |
 | Code-change work where multiple experts would edit the same files | Single agent. OEJ is analysis + verification; coding comes AFTER the judge passes on the plan. |
+| Independent fixes or plan tasks in disjoint files, with no rubric to judge | Delegate one subagent per task, followed by spec-compliance and code-quality review. |
 | Open-ended creative work with no rubric | Single agent. An ungrounded judge *degrades* quality (Huang et al. ICLR 2024). |
 | Task value < ~15 min of your time saved | Single agent. OEJ's pre-flight cost (plan + rubric) exceeds the win. |
 

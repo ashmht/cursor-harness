@@ -42,12 +42,14 @@ precedence. See `../SKILL.md`.
 `slack-native` is a register, not a voice. It complements the Slack formatting
 rules in `../SKILL.md`.
 
-- Compress hard. A one-line answer can be complete.
+- Compress by cutting filler, not facts. A one-line answer can be complete
+  when it carries every caveat the author gave.
 - Lowercase sentence starts are allowed when calibration samples support them.
 - Do not gloss shared jargon. Match the audience's acronym-expansion rate.
 - Answer the exact question first. Quote source text afterward only when the
   thread has enough branches that the reference is otherwise ambiguous.
-- Use numbered lists only for a real dependency chain.
+- Use numbered lists for a real dependency chain, or for several questions
+  the reader will answer by number ("for 1 - ...").
 - Separate the source's claim from the author's estimate.
 - Preserve harmless inconsistency from real samples. Perfect normalization is
   a tell.

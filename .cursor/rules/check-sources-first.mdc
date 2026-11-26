@@ -1,0 +1,14 @@
+---
+description: Search connected sources (Slack, Calendar, Drive, Notion, Gmail, Linear, repo) before asking the user for a fact or leaving a placeholder
+alwaysApply: true
+---
+
+# Check connected sources first
+
+Before asking the user to supply a fact, leaving a `[confirm]` or `[INSERT]` placeholder, or interpreting shorthand (meeting notes, product names, metrics, acronyms, dates like "Thursday"), search the connected sources:
+
+1. Slack: the term itself, then the channel that owns the topic. Read the thread when a hit is a summary.
+2. Calendar for the meeting itself (date, attendees), then Drive for its notes and running agenda docs.
+3. Notion, Gmail, Linear, and the repo (`git log`, docs, UI copy) for product names, launch dates, and official wording.
+
+Cite what you used (channel and date, doc title, commit or PR). When a source contradicts something already drafted, correct the draft and say so plainly. Leave a placeholder only for what the search did not answer, and name what you searched.
