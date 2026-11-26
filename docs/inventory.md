@@ -5,12 +5,16 @@ a mirror of the entire Cursor home directory.
 
 ## Included
 
-- Session workflow, memory-bank conventions, progress tracking, and reusable
-  engineering rules.
+- Role-specialized subagents (`coder`, `critic`, `scout`, `verifier`) for
+  multi-vendor coding, read-only exploration, blind critique, and verification.
+- Session workflow, memory-bank conventions, progress tracking, outbound-safety
+  guards, and reusable engineering rules.
 - Voice and writing rules that contain no workplace-specific examples.
-- Portable authored skills for documentation, teaching, presentations,
-  reviews, handoffs, writing, and multi-agent investigations.
-- A local session-cost hook that stores estimates under the user's Cursor home.
+- Portable authored skills for documentation, debugging, PR ownership, skill
+  testing, teaching, presentations, reviews, handoffs, writing, and multi-agent
+  investigations.
+- Active shell safety guards (git push, zsh word-splitting, docker env printing,
+  and section-safe PR body edits) plus a local session-cost hook.
 - Sanitized examples for CLI preferences, editor settings, keybindings, hooks,
   and public MCP integrations.
 - A dry-run-first installer and layered repository validator.

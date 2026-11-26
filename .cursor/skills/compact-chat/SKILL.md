@@ -138,8 +138,8 @@ Continuing from a prior session (use @Past Chats on that thread if needed).
 **Artifact:** Open `~/path/to/report.html` in browser — do not load full HTML into context.
 **Handoff file:** `.agent-handoff-<TICKET>.md`
 
-Start with step 1 only. Composer 2.5 Fast unless I say Sonnet or Opus. Grep/subagent before full-file Read.
-Read with limit/offset. Snowflake/MCP: LIMIT 100. Big shell output → file, read tail only.
+Start with step 1 only. Gemini 4 Neon (medium) for coding or Composer 2.5 (standard, non-fast) for light tasks; Claude Opus 5.5 only for architecture/verification. Grep/scout subagent before full-file Read.
+Read with limit/offset. SQL/MCP: LIMIT 100. Big shell output → file, read tail only.
 Do not switch models mid-chat.
 ```
 

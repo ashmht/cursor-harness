@@ -1,6 +1,28 @@
 {
   "version": 1,
   "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "${HOME}/.cursor/hooks/guard-git-push.sh",
+        "matcher": "git.*push",
+        "timeout": 30
+      },
+      {
+        "command": "${HOME}/.cursor/hooks/guard-zsh-split.sh",
+        "matcher": "\\$|(^|[\\s;&|(])=",
+        "timeout": 5
+      },
+      {
+        "command": "${HOME}/.cursor/hooks/guard-docker-env.sh",
+        "matcher": "docker",
+        "timeout": 5
+      },
+      {
+        "command": "${HOME}/.cursor/hooks/guard-gh-pr-body.sh",
+        "matcher": "gh\\s+pr\\s+edit",
+        "timeout": 5
+      }
+    ],
     "sessionStart": [
       {
         "command": "${HOME}/.cursor/hooks/session-cost.sh"

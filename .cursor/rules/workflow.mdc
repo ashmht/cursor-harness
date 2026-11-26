@@ -9,14 +9,16 @@ At the start of every new session, before doing any work:
 
 1. **Orient:** Run `pwd`, `git branch --show-current`, and `git status`.
 2. **Load progress:** Read `.agent-progress.md` if it exists — know what's in-flight and any blockers.
-3. **Load learnings:** Read `.memory-bank/session-learnings.md` when present.
+3. **Load learnings:** Read `.memory-bank/session-learnings.md` when present. Load topic files under `.memory-bank/` only when the task touches that topic.
 4. **Identify codebase:** Match the user's request to a codebase in
    `.cursor/harness.yaml` when present; otherwise infer from file paths. Read the
-   codebase's `CLAUDE.md` when present, then relevant `.memory-bank/` files on
-   demand.
+   codebase's `CLAUDE.md` or `AGENTS.md` when present, then relevant
+   `.memory-bank/` files on demand.
 5. **Be silent about it.** Don't produce a briefing. Mention prior context only if it directly affects the task.
 
 Skip steps 1-4 if the user's first message is a quick question needing no code changes.
+
+**Blind subagents:** If your prompt says blind, independent, fresh review, or `ISOLATION`, skip steps 1-4: read no `.agent-progress*`, `.memory-bank`, `session-learnings.md`, `learnings/` file, or transcript. Load only the skills the prompt names.
 
 ## Before Writing Code
 
@@ -25,14 +27,41 @@ Skip steps 1-4 if the user's first message is a quick question needing no code c
 2. **Create tracking only when required:** Do not create an issue merely for
    ceremony. Follow the repository policy or the user's explicit request.
 3. **Protect existing work:** If the task is unrelated to the current branch,
-   create a new branch or worktree without discarding local changes.
+   create a new branch or worktree without discarding local changes. Check
+   first whether you are already in a worktree, and never remove a worktree you
+   did not create.
+4. **Process skill first:** When `systematic-debugging` and a domain skill both
+   apply, load `systematic-debugging` first.
+5. **PR tier & hypothesis first:** Before reading code on a task that will end in
+   a PR, classify whether it is **low-risk** (docs, `CODEOWNERS`, dev tooling,
+   tests-only, small copy/config/cleanup tweaks with no money, auth/security,
+   migration, deletion, or live-path concurrency risk) or **important**. For
+   low-risk PRs, skip `pr-critical-thinking` and blind PR review passes (confirm
+   in one line when borderline). For all other PRs, load `pr-critical-thinking`
+   and ask its section 1 questions before reading code.
 
 ## During Work
 
+- **Model routing & cost discipline:**
+  - **Default (1–3 file / single-stream work):** Drive the session directly on
+    Gemini 4 Neon (medium default; high for complex multi-file). Consult
+    `verifier` (read-only, Claude Opus 5.5) at commitment boundaries (plan,
+    architecture, or money sign-off and final verification) and `critic`
+    (read-only, blind, GPT-5.6 Sol) for diff review.
+  - **Multi-workstream / heavy orchestration:** Run Claude as orchestrator and
+    delegate bounded implementation to `coder` (Gemini 4 Neon).
+  - **Never leave bulk reads or reviews on `model: inherit`:** Route codebase,
+    log, and doc sweeps to `scout` (Composer 2.5 standard, read-only). Keep
+    subagent prompts minimal (paths, SHAs, exact ask — never full chat history)
+    and hand off via `compact-chat` at >=75% context (`cursor-cost-discipline.mdc`).
 - **Use the narrowest reliable tool:** Prefer repository-native and
   service-native tools with bounded output. Do not route around access or
   approval controls.
 - **Small PRs:** Target < 400 lines diff, one logical change per PR. Split if scope grows.
+- **Push and PR-body safety:** Never push directly to `main`/`master`, never use
+  plain `--force` or `+refspec`, and always pin `--force-with-lease=<branch>:<sha>`.
+  Avoid blind `gh pr edit --body` overwrites across concurrent sessions; use
+  section-scoped edits via `~/.cursor/hooks/pr-body-edit.py <pr> --section <name>`.
 
 ## When Stuck
 
@@ -43,18 +72,40 @@ If 3+ consecutive attempts at the same step fail:
 3. Summarize: what was tried, what failed, and what the likely root cause is.
 4. Ask the user for guidance before continuing.
 
+## Before Claiming Done
+
+Run the command that proves a claim in this turn and read its output before
+saying done, fixed, or passing. An earlier run, a clean linter, or a subagent's
+success report is not proof: tests need fresh output with 0 failures, a build
+needs exit 0, a bug fix needs the original symptom re-run, and delegated work
+needs its `git diff` checked. If you could not run the proof, say so instead of
+"should work".
+
 ## Before Creating PR (mandatory sequence)
 
+For **low-risk PRs** (confirmed when borderline), skip the blind review passes in
+step 2 (`critic` / `verifier`) and step 4 (`pr-critical-thinking`) — still run
+build, lint, and tests. For all other PRs, run the full sequence:
+
 1. **Build:** Look up build gate commands in `.cursor/harness.yaml` or the codebase's `CLAUDE.md`. Run all steps (compile, lint, test). Don't skip any.
-2. **Self-review:** Review the diff against the project's review checklist if one exists.
+2. **Self-review:** Review the diff against the project's review checklist if one exists. On non-skipped PRs, before requesting human review and after any head-changing revision, run `critical-pr-review` in a fresh blind subagent (`critic`) on a different model family from the author, given only the isolation block, base/head SHAs, diff, and requirements (no chat history); verify and fix its findings first. For high-risk or multi-file changes, run `verifier` for final sign-off.
 3. **Create PR:** When requested or required by repository policy, create a
    draft PR with a clear summary.
-4. **Update progress:** Update `.agent-progress.md` — mark work completed, note PR link.
+4. **Critical-thinking card:** On non-skipped PRs, before marking ready, requesting
+   a human reviewer, or merging, run `pr-critical-thinking` sections 3–5 and wait
+   for the user's answers.
+5. **Update progress:** Update `.agent-progress.md` — mark work completed, note PR link.
 
 ## Session End
 
 Before the session ends (or when the user says they're done):
 
 1. **Update `.agent-progress.md`**: What was completed, what's in progress, what's next, blockers.
-2. **Update session-learnings**: If a new pattern or gotcha emerged, add with `[YYYY-MM-DD]` prefix. If at capacity (20 entries), evict lowest-scoring by recency x blast-radius.
+2. **Record durable learnings:**
+   - **A repeat is not a new prose bullet.** If the same mistake recurs, build a
+     mechanism (hook, linter check, script, or test) instead of adding more rule
+     text.
+   - New durable lessons go into `.memory-bank/session-learnings.md` with a
+     `[YYYY-MM-DD]` prefix (capped at 20 one-line rules; evict lowest-scoring
+     by recency x blast-radius, or move detail into topic files).
 3. **Suggest commit**: If meaningful uncommitted changes exist, suggest a checkpoint commit.

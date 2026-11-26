@@ -1,0 +1,17 @@
+---
+description: Keep Slack DMs draft-only and require confirmation for channel posts
+alwaysApply: true
+---
+
+# Slack Outbound Messages
+
+Never send or schedule a direct message. Create or update an unsent DM draft instead, even when the user confirms the text, says it is urgent, or grants standing permission.
+
+Before sending or scheduling a channel message or thread reply:
+1. Show the exact final text and destination.
+2. Ask the user to confirm.
+3. Wait for a new user reply approving that exact post.
+
+The initial request to send, urgency, standing permission, or "don't ask again" is not confirmation. If the text or destination changes, confirm again.
+
+Creating or updating an unsent Slack draft does not require confirmation.

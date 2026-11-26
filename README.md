@@ -9,12 +9,18 @@ credentials, runtime state, or plugin caches.
 
 ## What is here
 
-- `.cursor/rules/`: workflow, reasoning, writing, voice, and engineering rules.
-- `.cursor/skills/`: reusable skills for documentation, teaching, handoffs,
-  presentations, writing, reviews, and multi-agent investigations.
+- `.cursor/agents/`: role-specialized subagents (`coder`, `critic`, `scout`,
+  `verifier`) for multi-vendor routing and blind diff review.
+- `.cursor/rules/`: workflow, reasoning, writing, voice, outbound-safety, and
+  engineering rules.
+- `.cursor/skills/`: reusable skills for documentation, teaching, debugging,
+  PR critical thinking, skill testing, handoffs, presentations, writing,
+  reviews, and multi-agent investigations.
 - `.memory-bank/`: Ruby architecture and testing standards, plus durable
   cross-session learning. Ruby is the primary language pack.
-- `hooks/`: a local-only session cost estimator with no network calls.
+- `hooks/`: active shell safety guards (git push, zsh word-splitting, docker
+  env leak, section-safe PR body edits via `pr-body-edit.py`) plus a local-only
+  session cost estimator with no network calls.
 - `templates/`: sanitized examples for Cursor CLI config, MCP servers, hooks,
   editor settings, keybindings, and personal instructions.
 - `scripts/install.py`: a dry-run-first installer with `core`, `writing`, and
@@ -81,7 +87,7 @@ python3 scripts/install.py --config --apply
   metadata removed.
 - `templates/mcp.example.json`: public integrations with no credentials or
   account-specific OAuth values.
-- `templates/hooks.example.json`: session-cost hook registration.
+- `templates/hooks.example.json`: guard-hook and session-cost hook registration.
 - `templates/settings.example.jsonc`: portable editor and monorepo-performance
   settings.
 - `templates/keybindings.example.json`: the personal Agent shortcut.
@@ -98,9 +104,9 @@ Editor settings target Ruby (two-space indent, Bundler `vendor/bundle` excluded)
 and do not pin a Python interpreter or a color theme. Keybindings include both
 `cmd+i` and `ctrl+i` for the Agent shortcut.
 
-The hook template points to `${HOME}/.cursor/hooks/session-cost.sh`, which is
-where the core profile places the script. `--config` merges those hook entries
-into `~/.cursor/hooks.json`.
+The hook template points to `${HOME}/.cursor/hooks/*.sh`, which is where the
+core profile places the guard and session-cost scripts. `--config` merges those
+hook entries into `~/.cursor/hooks.json`.
 
 ## Repository harness
 

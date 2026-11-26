@@ -5,7 +5,7 @@ the author's facts, stakes, or experiences. No dependencies or network calls.
 
 ## What it does
 
-- Detects **46 AI writing patterns** (P1-P46, including register, grounding, and fabricated-specificity checks)
+- Detects **52 AI writing patterns** (P1-P52, including register, grounding, fabricated-specificity, and self-reference checks)
 - Rewrites text to sound like a specific human wrote it
 - Preserves the fabrication boundary: mechanical fixes are automatic; substantive gaps are flagged for the author
 - Three modes: scan-only, full rewrite, in-place file editing
@@ -83,10 +83,12 @@ Drop a `humanizer-context.md` at the project root with your samples and banned p
 ## How it works
 
 1. **Parse**: Extracts text and flags from arguments
-2. **Detect**: Scans for 46 AI patterns across six categories
+2. **Detect**: Scans for 52 AI patterns across seven categories
 3. **Rewrite**: Applies mechanical fixes and the selected voice without fabricating substantive detail
 4. **Verify**: Checks output against detection patterns, sentence variance, and the "who wrote this?" test
-5. **Output**: Clean text with change summary
+5. **Output**: The rewritten text, then at most a few sentences of editor's notes and up to three questions for facts it could not supply. Detect mode is a short plain-prose note, strongest passage first, with pattern numbers in parentheses. No report headers, severity labels, or per-pattern Why/Fix blocks.
+
+Rewrites are checked for the fingerprint subtractive editing leaves behind: every paragraph in the same claim-support-kicker shape, staccato fragments, and label scaffolding. A blind study of blader/humanizer ([#229](https://github.com/blader/humanizer/issues/229)) found its pass cut AI vocabulary hits from 70 to 0 while uniform-rhythm hits rose from 60 to 101.
 
 ## Pattern categories
 
@@ -98,12 +100,17 @@ Drop a `humanizer-context.md` at the project root with your samples and banned p
 | Filler & Hedging | P22-P30 | Filler phrases, hedging, generic conclusions, uniform sentence length |
 | Emerging (2026) | P31-P43 | Elegant variation, citation leaks, tracking URLs, register shifts, treadmill prose |
 | Register & Grounding (2026) | P44-P46 | Over-explained context, stakelessness, fabricated specificity |
+| Staging & Self-reference (2026-11) | P47-P52 | Arguing with no one, sayings that sound deep, colon reveals, writing about the document, vague association, repeated openings |
 
 ## Credits
 
 Built from research across:
 - [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
-- Softaworks agent-toolkit humanizer by @blader
+- [blader/humanizer](https://github.com/blader/humanizer) v3.1 and v4.0.0 (strongest-first ranking, weak-alone patterns, embedded mode; from v4: arguing with no one, sayings that sound deep, writing about the document, vague association, en dash rule, input-as-material). v4's change to let the rewrite add facts is deliberately not adopted.
+- [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) (smallest edit that works, colon reveals, lone-expert setups, delete fake-profound closers)
+- [milock/humanizer](https://github.com/milock/humanizer) (claim-preservation check, technical-sense exemption, stet)
+- [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) ("never inject these" rewrite guardrails)
+- [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)
 - Davila7 claude-code-templates (humanizer + writing-clearly-and-concisely)
 - William Strunk Jr., *The Elements of Style* (1918)
 - Community research from Reddit, HackerNews, and writing communities

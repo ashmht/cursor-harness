@@ -327,6 +327,25 @@ def validate_structure(root: Path, files: list[Path]) -> Layer:
             elif "alwaysApply:" not in header:
                 layer.errors.append(f"{relative}: missing alwaysApply")
 
+        if path.suffix == ".md" and ".cursor" in path.parts and "agents" in path.parts:
+            layer.checked += 1
+            header = frontmatter(text)
+            if header is None:
+                layer.errors.append(f"{relative}: missing agent frontmatter")
+            else:
+                agent_name = frontmatter_value(header, "name")
+                if not agent_name:
+                    layer.errors.append(f"{relative}: missing agent frontmatter name")
+                elif agent_name != path.stem:
+                    layer.errors.append(
+                        f"{relative}: agent name {agent_name!r} != filename {path.stem!r}"
+                    )
+                for required_key in ("description:", "model:", "readonly:"):
+                    if required_key not in header:
+                        layer.errors.append(
+                            f"{relative}: missing agent frontmatter {required_key[:-1]}"
+                        )
+
         for match in re.finditer(
             r"(?:~|\$HOME|\$\{HOME\})/\.cursor/skills/([a-z0-9-]+)/",
             text,
@@ -349,10 +368,14 @@ def validate_structure(root: Path, files: list[Path]) -> Layer:
             except (json.JSONDecodeError, KeyError, TypeError) as exc:
                 layer.errors.append(f"{relative}: invalid hook template: {exc}")
             else:
-                expected = "${HOME}/.cursor/hooks/session-cost.sh"
-                if not commands or any(command != expected for command in commands):
+                hooks_dir = root / "hooks"
+                allowed = {
+                    f"${{HOME}}/.cursor/hooks/{script.name}"
+                    for script in hooks_dir.glob("*.sh")
+                }
+                if not commands or any(command not in allowed for command in commands):
                     layer.errors.append(
-                        f"{relative}: hook command must target installed script"
+                        f"{relative}: hook command must target an installed script in hooks/"
                     )
 
     return layer

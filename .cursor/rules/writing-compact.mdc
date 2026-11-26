@@ -21,6 +21,9 @@ Use this as a final lint checklist, not as a voice guide.
 - Separate verified fact, inference, potential exposure, and realized impact.
 - If you would tag someone to confirm a claim, verify it before sending.
 - Never turn an unverified hunch into consensus language.
+- For technical replies (Staff+ posture), verify the solution before drafting and
+  be opinionated: frame any question as a bounded confirmation or objection check
+  against a concrete, verified recommendation rather than an open-ended ask.
 
 ## BLUF
 
@@ -35,12 +38,13 @@ the answer; it does not repeat it.
 
 ## Why / What / Impact
 
-Use this shape for decision pings, escalations, deployment asks, and
-action-required email:
+Decision pings, escalations, deployment asks, and action-required email must
+answer three questions. Answer them in sentences, not as `Why:` / `What:` /
+`Impact:` labels; labeled scaffolding on a one-off message reads as AI.
 
-- **Why:** Why now? What is at risk?
-- **What:** What one action or decision is needed?
-- **Impact:** Who or what is affected, with a number or deadline when known?
+- Why now, and what is at risk?
+- What one action or decision is needed?
+- Who or what is affected, with a number or deadline when known?
 
 ## Default if silent
 
@@ -72,7 +76,7 @@ closing restatement of the opening. Vary sentence length. Use the actual verb.
 ```text
 [ ] Answer or BLUF in sentence one
 [ ] Main message stands alone
-[ ] Why / What / Impact when action is required
+[ ] Why now, what decision, and who is affected answered in sentences when action is required
 [ ] Claims verified or clearly labeled as inference
 [ ] Default-if-silent and exact deadline when asking
 [ ] Vocabulary matches the least technical primary reader

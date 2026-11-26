@@ -14,6 +14,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+AGENTS_ROOT = REPO_ROOT / ".cursor" / "agents"
 RULES_ROOT = REPO_ROOT / ".cursor" / "rules"
 SKILLS_ROOT = REPO_ROOT / ".cursor" / "skills"
 HOOKS_ROOT = REPO_ROOT / "hooks"
@@ -28,6 +29,8 @@ RULE_PROFILES = {
         "cursor-cost-discipline.mdc",
         "truth-seeking.mdc",
         "rebase-pr-branches.mdc",
+        "check-sources-first.mdc",
+        "slack-send-confirmation.mdc",
     },
     "writing": {
         "fowler-voice.mdc",
@@ -52,8 +55,11 @@ SKILL_PROFILES = {
         "cursor-cost-handoff",
         "notion-mcp",
         "orchestrator-experts-judge",
+        "pr-critical-thinking",
         "skill-adoption-eval",
         "staff-eng",
+        "systematic-debugging",
+        "testing-skills",
     },
     "writing": {
         "architecture-diagram",
@@ -132,6 +138,12 @@ def source_files(profiles: list[str] | None = None) -> list[tuple[Path, Path]]:
         files.append((source, Path("skills") / relative))
 
     if include_hooks:
+        if AGENTS_ROOT.is_dir():
+            for source in sorted(AGENTS_ROOT.glob("*.md")):
+                if source.is_symlink():
+                    raise ValueError(f"Refusing symlink source: {source}")
+                if source.is_file():
+                    files.append((source, Path("agents") / source.name))
         for source in sorted(HOOKS_ROOT.rglob("*")):
             if source.is_symlink():
                 raise ValueError(f"Refusing symlink source: {source}")
