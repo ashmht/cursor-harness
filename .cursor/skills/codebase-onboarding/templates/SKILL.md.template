@@ -1,0 +1,68 @@
+---
+name: {{skill_name}}
+description: "Codebase map of {{company}} for onboarding and debugging: architecture, data model, product capabilities to code, traced flows, recipes, debugging runbooks, vendors, internal tools, <staff audience only, otherwise delete: architecture decisions and migrations in flight, ownership, the path to production, scale and SLOs, trust boundaries>. Use when someone is new, asks where X lives or how X works end to end, or needs to pick which specialist skill to load."
+---
+
+# {{company}} expert: the codebase map
+
+> Load this first when you need context across the whole codebase. It gives you the map; the
+> specialist skills in the router give you the depth.
+
+## The 30-second version
+
+<!-- One paragraph a newcomer can repeat: what the company sells, the three or four core nouns, what
+owns the data and money logic, what the clients are. Then one small diagram. -->
+
+```mermaid
+flowchart LR
+  Clients --> API --> Services --> DB[(Datastores)]
+```
+
+## Five facts that save hours
+
+<!-- The five things every newcomer gets wrong in week one, each with a citation. Renamed models,
+id rules, which API new work goes on, retired areas, where money truth lives. -->
+
+1. <fact> (`<path>:<line>`)
+
+## What to read
+
+| If you are... | Read, in order |
+|---|---|
+| A person on day one | [`{{html}}`]({{html}}), then [onboarding-path.md](references/onboarding-path.md), then [glossary.md](references/glossary.md) |
+| A staff engineer | The above, then [decisions.md](references/decisions.md), [ownership.md](references/ownership.md), [operations.md](references/operations.md), [security.md](references/security.md) |
+| An agent orienting | This file, then the one reference that matches the question |
+
+| Question | Reference |
+|---|---|
+| What does this word mean? Which of two similar things is it? | [glossary.md](references/glossary.md) |
+| Which code backs a product, with its flow, vendors, runbook and owner | [capabilities.md](references/capabilities.md) |
+| What runs where, which stack, which host | [system-map.md](references/system-map.md) |
+| Which model, which id, how models relate, which datastore | [data-model.md](references/data-model.md) |
+| How the main flows work at request time | [flows.md](references/flows.md) |
+| How to make the common changes | [recipes.md](references/recipes.md) |
+| Something is broken | [debugging.md](references/debugging.md) |
+| Which outside vendor does this, and where is the integration | [vendors.md](references/vendors.md) |
+| Which tool for errors, metrics, analytics, flags, CI, local dev | [tools.md](references/tools.md) |
+| Why it is built this way; what is mid-migration | [decisions.md](references/decisions.md) |
+| Who owns it, who decides, who is on call | [ownership.md](references/ownership.md) |
+| How code ships, rolls back, and how big the system is | [operations.md](references/operations.md) |
+| Where the trust boundaries and sensitive paths are | [security.md](references/security.md) |
+| Which other docs in the repo are out of date | [maintaining.md](maintaining.md#known-stale-docs) |
+
+The Markdown references are the source of truth. The HTML card is a teaching summary built from them.
+
+## Skill router
+
+| Working on | Load |
+|---|---|
+| <area> | `<skill>` |
+
+## Using this skill as an agent
+
+- Orient here, then load the specialist skill from the router.
+- These references are point-in-time. Each names the commit it was verified on. Before you repeat a
+  claim in a PR or a message, re-open the cited path.
+- When this map and the code disagree, the code wins. Fix this skill in the same PR.
+
+To update or teach from this skill, read [maintaining.md](maintaining.md).

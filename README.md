@@ -13,9 +13,9 @@ credentials, runtime state, or plugin caches.
   `verifier`) for multi-vendor routing and blind diff review.
 - `.cursor/rules/`: workflow, reasoning, writing, voice, outbound-safety, and
   engineering rules.
-- `.cursor/skills/`: reusable skills for documentation, teaching, debugging,
-  PR critical thinking, skill testing, handoffs, presentations, writing,
-  reviews, and multi-agent investigations.
+- `.cursor/skills/`: reusable skills for documentation, teaching, codebase
+  onboarding, debugging, PR critical thinking, skill testing, handoffs,
+  presentations, writing, reviews, and multi-agent investigations.
 - `.memory-bank/`: Ruby architecture and testing standards, plus durable
   cross-session learning. Ruby is the primary language pack.
 - `hooks/`: active shell safety guards (git push, zsh word-splitting, docker

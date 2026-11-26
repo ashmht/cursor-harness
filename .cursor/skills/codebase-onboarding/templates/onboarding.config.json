@@ -1,0 +1,10 @@
+{
+  "html": "{{html}}",
+  "audience": "staff",
+  "max_age_days": 90,
+  "roots": [],
+  "preferred_roots": [],
+  "skip_prefixes": [],
+  "display_prefixes": {},
+  "capabilities_intro": "What {{company}} sells, and where each piece lives. The full version, with vendors, runbooks and owners per capability, is references/capabilities.md. Hover a path to see it in full."
+}
